@@ -22,3 +22,8 @@ bun run build
 ```
 
 You can preview the production build with `bun run preview`.
+
+
+## Deployment
+
+The page is deployed automatically to https://zarevo.yazero.io when there are changes on the main branch.
