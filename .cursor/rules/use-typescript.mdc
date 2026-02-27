@@ -1,0 +1,28 @@
+---
+description: Use TypeScript for all JavaScript code in this project
+alwaysApply: true
+---
+
+# Use TypeScript
+
+Write all code in TypeScript. Avoid plain JavaScript (`.js`).
+
+## Guidelines
+
+- Use `.ts` for source files, `.tsx` for React/Svelte components with TypeScript
+- Add explicit types for function parameters and return values when inference is unclear
+- Prefer `interface` or `type` for object shapes instead of `any`
+
+## Examples
+
+```typescript
+// ❌ BAD - untyped
+function process(data) {
+  return data.items.map(i => i.value);
+}
+
+// ✅ GOOD
+function process(data: { items: { value: string }[] }): string[] {
+  return data.items.map(i => i.value);
+}
+```

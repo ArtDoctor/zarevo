@@ -1,0 +1,33 @@
+---
+description: Always use bun instead of npm for package management
+alwaysApply: true
+---
+
+# Use Bun Instead of npm
+
+Use **bun** for all JavaScript/TypeScript package management. Never use npm.
+
+## Command equivalents
+
+| npm | bun |
+|-----|-----|
+| `npm install` | `bun install` |
+| `npm run <script>` | `bun run <script>` |
+| `npm add <pkg>` | `bun add <pkg>` |
+| `npm add -D <pkg>` | `bun add -d <pkg>` |
+| `npm remove <pkg>` | `bun remove <pkg>` |
+| `npx <cmd>` | `bunx <cmd>` |
+
+## Examples
+
+```bash
+# ❌ BAD
+npm install
+npm run dev
+npx playwright test
+
+# ✅ GOOD
+bun install
+bun run dev
+bunx playwright test
+```
