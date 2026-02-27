@@ -40,6 +40,26 @@
 		goto('/', { replaceState: true });
 	}
 
+	function extractAuthError(e: unknown, fallback: string): string {
+		const err = e as {
+			response?: { message?: string };
+			data?: { message?: string };
+			message?: string;
+			originalError?: { message?: string };
+			cause?: { message?: string };
+		};
+		return (
+			err?.response?.message ??
+			err?.data?.message ??
+			err?.message ??
+			err?.originalError?.message ??
+			(err?.cause && typeof err.cause === 'object' && 'message' in err.cause
+				? (err.cause as { message?: string }).message
+				: undefined) ??
+			fallback
+		);
+	}
+
 	async function handleRequestOTP() {
 		error = validateEmail(email);
 		if (error !== '') return;
@@ -62,13 +82,12 @@
 			const result = await pb.collection('users').requestOTP(email);
 			otpId = result.otpId;
 		} catch (e: unknown) {
-			const err = e as { response?: { message?: string }; message?: string };
-			error =
-				err?.response?.message ??
-				err?.message ??
-				(currentMode === 'signup'
+			error = extractAuthError(
+				e,
+				currentMode === 'signup'
 					? 'Could not create account. Email may already be in use.'
-					: 'Could not send code. Check your email address.');
+					: 'Could not send code. Check your email address.'
+			);
 		} finally {
 			loading = false;
 		}
@@ -85,7 +104,7 @@
 			await pb.collection('users').authWithOTP(otpId, otpCode);
 			onAuthSuccess();
 		} catch (e: unknown) {
-			error = 'Invalid or expired code. Please try again.';
+			error = extractAuthError(e, 'Invalid or expired code. Please try again.');
 		} finally {
 			loading = false;
 		}
@@ -107,8 +126,7 @@
 			await pb.collection('users').authWithOAuth2({ provider: providerName });
 			onAuthSuccess();
 		} catch (e: unknown) {
-			const err = e as { response?: { message?: string }; message?: string };
-			error = err?.response?.message ?? err?.message ?? 'OAuth login failed. Please try again.';
+			error = extractAuthError(e, 'OAuth login failed. Please try again.');
 		} finally {
 			loading = false;
 		}
