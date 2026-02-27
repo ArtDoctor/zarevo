@@ -2,22 +2,15 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import AuthModal from '$lib/components/AuthModal.svelte';
-	import { invalidateAll } from '$app/navigation';
+	import { currentUser, pb } from '$lib/pocketbase';
 
 	let { data, children } = $props();
 
 	let showAuthModal = $state(false);
 	let authModalMode = $state<'signin' | 'signup'>('signin');
 
-	$effect(() => {
-		if (data.user) {
-			console.log('Logged in:', data.user.email);
-		}
-	});
-
-	async function handleLogout() {
-		await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-		await invalidateAll();
+	function handleLogout() {
+		pb.authStore.clear();
 	}
 </script>
 
@@ -30,9 +23,9 @@
 		</a>
 
 		<div class="flex items-center gap-3">
-			{#if data.user}
+			{#if $currentUser}
 				<span class="text-sm text-zinc-600 dark:text-zinc-400 truncate max-w-[150px]">
-					{data.user.email}
+					{$currentUser?.username ?? $currentUser?.email ?? 'User'}
 				</span>
 				<button
 					type="button"

@@ -1,5 +1,15 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { pb } from '$lib/pocketbase';
+
 	let mainInput = $state('');
+
+	onMount(() => {
+		if (pb.authStore.isValid) {
+			goto('/', { replaceState: true });
+		}
+	});
 	let targetMarket = $state('');
 	let problem = $state('');
 	let solution = $state('');

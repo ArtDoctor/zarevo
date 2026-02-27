@@ -1,9 +1,5 @@
-import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (locals.pb.authStore.record) {
-		throw redirect(303, '/');
-	}
+export const load: PageServerLoad = async () => {
 	return {};
 };

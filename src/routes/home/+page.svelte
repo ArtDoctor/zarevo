@@ -1,7 +1,15 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { pb } from '$lib/pocketbase';
 
 	let startupIdea = $state('');
+
+	onMount(() => {
+		if (pb.authStore.isValid) {
+			goto('/', { replaceState: true });
+		}
+	});
 
 	function handleSubmit() {
 		if (startupIdea.trim()) {
