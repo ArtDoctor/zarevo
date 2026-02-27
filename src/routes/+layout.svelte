@@ -9,6 +9,12 @@
 	let showAuthModal = $state(false);
 	let authModalMode = $state<'signin' | 'signup'>('signin');
 
+	$effect(() => {
+		if (data.user) {
+			console.log('Logged in:', data.user.email);
+		}
+	});
+
 	async function handleLogout() {
 		await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
 		await invalidateAll();

@@ -3,11 +3,11 @@ import type { LayoutServerLoad } from './$types';
 import { serializeNonPOJOs } from '$lib/utils';
 
 export const load: LayoutServerLoad = async ({ url, locals }) => {
-	if (url.pathname === '/') {
+	const user = locals.pb.authStore.record ? serializeNonPOJOs(locals.pb.authStore.record) : null;
+
+	if (url.pathname === '/' && !user) {
 		throw redirect(303, '/home');
 	}
-
-	const user = locals.pb.authStore.record ? serializeNonPOJOs(locals.pb.authStore.record) : null;
 	let authProviders: { name: string; displayName: string; authUrl: string }[] = [];
 
 	try {

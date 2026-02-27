@@ -9,6 +9,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	try {
 		if (event.locals.pb.authStore.isValid) {
 			await event.locals.pb.collection('users').authRefresh();
+		} else if (event.locals.pb.authStore.token) {
+			event.locals.pb.authStore.clear();
 		}
 	} catch {
 		event.locals.pb.authStore.clear();
