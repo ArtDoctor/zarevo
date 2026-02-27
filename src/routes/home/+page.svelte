@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { pb } from '$lib/pocketbase';
+	import { setValidationForm } from '$lib/stores/validation-form';
+	import { requestSignIn } from '$lib/stores/auth-modal';
 
 	let startupIdea = $state('');
 
@@ -12,8 +14,11 @@
 	});
 
 	function handleSubmit() {
-		if (startupIdea.trim()) {
-			goto('/home/advanced');
+		setValidationForm({ startupIdea });
+		if (pb.authStore.isValid) {
+			goto('/');
+		} else {
+			requestSignIn();
 		}
 	}
 </script>
@@ -44,12 +49,13 @@
 			>
 				Validate
 			</button>
-			<a
-				href="/home/advanced"
-				class="px-8 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-medium transition-colors text-center"
+			<button
+				type="button"
+				onclick={() => goto('/home/advanced')}
+				class="px-8 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-medium transition-colors"
 			>
 				Advanced
-			</a>
+			</button>
 		</div>
 	</form>
 </div>

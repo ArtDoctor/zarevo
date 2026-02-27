@@ -3,14 +3,14 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import AuthModal from '$lib/components/AuthModal.svelte';
 	import { currentUser, pb } from '$lib/pocketbase';
+	import { showAuthModal, authModalMode } from '$lib/stores/auth-modal';
+	import { goto } from '$app/navigation';
 
 	let { data, children } = $props();
 
-	let showAuthModal = $state(false);
-	let authModalMode = $state<'signin' | 'signup'>('signin');
-
 	function handleLogout() {
 		pb.authStore.clear();
+		goto('/home', { replaceState: true });
 	}
 </script>
 
@@ -37,14 +37,14 @@
 			{:else}
 				<button
 					type="button"
-					onclick={() => { authModalMode = 'signin'; showAuthModal = true; }}
+					onclick={() => { authModalMode.set('signin'); showAuthModal.set(true); }}
 					class="px-4 py-2 text-sm font-medium rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
 				>
 					Sign in
 				</button>
 				<button
 					type="button"
-					onclick={() => { authModalMode = 'signup'; showAuthModal = true; }}
+					onclick={() => { authModalMode.set('signup'); showAuthModal.set(true); }}
 					class="px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition-colors"
 				>
 					Sign up
@@ -58,10 +58,10 @@
 	{@render children()}
 </main>
 
-{#if showAuthModal}
+{#if $showAuthModal}
 	<AuthModal
-		mode={authModalMode}
+		mode={$authModalMode}
 		authProviders={data.authProviders ?? []}
-		onclose={() => { showAuthModal = false; }}
+		onclose={() => showAuthModal.set(false)}
 	/>
 {/if}

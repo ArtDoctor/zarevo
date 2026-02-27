@@ -1,36 +1,30 @@
-export function validateUserDataLogin(userData: { username: string; password: string }): string {
-	if (!userData.username?.trim()) {
-		return 'Username is required';
+export function validateEmail(email: string): string {
+	if (!email?.trim()) {
+		return 'Email is required';
 	}
-	if (!userData.password) {
-		return 'Password is required';
-	}
-	if (userData.password.length < 8) {
-		return 'Password must be at least 8 characters';
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	if (!emailRegex.test(email)) {
+		return 'Please enter a valid email address';
 	}
 	return '';
 }
 
-export function validateUserDataRegister(userData: {
-	username: string;
-	email: string;
-	password: string;
-}): string {
-	if (!userData.username?.trim()) {
-		return 'Username is required';
+export function validateOTPCode(code: string): string {
+	if (!code?.trim()) {
+		return 'Verification code is required';
 	}
-	if (!userData.email?.trim()) {
-		return 'Email is required';
-	}
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	if (!emailRegex.test(userData.email)) {
-		return 'Please enter a valid email address';
-	}
-	if (!userData.password) {
+	return '';
+}
+
+export function validatePassword(password: string, passwordConfirm?: string): string {
+	if (!password?.trim()) {
 		return 'Password is required';
 	}
-	if (userData.password.length < 8) {
+	if (password.length < 8) {
 		return 'Password must be at least 8 characters';
+	}
+	if (passwordConfirm !== undefined && password !== passwordConfirm) {
+		return 'Passwords do not match';
 	}
 	return '';
 }

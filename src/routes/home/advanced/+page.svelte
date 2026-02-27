@@ -1,19 +1,43 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { pb } from '$lib/pocketbase';
+	import { validationFormStore, setValidationForm } from '$lib/stores/validation-form';
+	import { requestSignIn } from '$lib/stores/auth-modal';
 
 	let mainInput = $state('');
+	let targetMarket = $state('');
+	let problem = $state('');
+	let solution = $state('');
+	let competitors = $state('');
 
 	onMount(() => {
 		if (pb.authStore.isValid) {
 			goto('/', { replaceState: true });
 		}
+		const stored = get(validationFormStore);
+		mainInput = stored.startupIdea;
+		targetMarket = stored.targetMarket;
+		problem = stored.problem;
+		solution = stored.solution;
+		competitors = stored.competitors;
 	});
-	let targetMarket = $state('');
-	let problem = $state('');
-	let solution = $state('');
-	let competitors = $state('');
+
+	function handleSubmit() {
+		setValidationForm({
+			startupIdea: mainInput,
+			targetMarket,
+			problem,
+			solution,
+			competitors
+		});
+		if (pb.authStore.isValid) {
+			goto('/');
+		} else {
+			requestSignIn();
+		}
+	}
 </script>
 
 <div class="max-w-2xl mx-auto py-12 px-4">
@@ -28,6 +52,7 @@
 	<form
 		onsubmit={(e) => {
 			e.preventDefault();
+			handleSubmit();
 		}}
 		class="space-y-6"
 	>
