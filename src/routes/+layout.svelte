@@ -3,7 +3,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import AuthModal from '$lib/components/AuthModal.svelte';
 	import { currentUser, pb } from '$lib/pocketbase';
-	import { showAuthModal, authModalMode } from '$lib/stores/auth-modal';
+	import { showAuthModal, authModalMode, requestSignIn, requestSignUp } from '$lib/stores/auth-modal';
 	import { goto } from '$app/navigation';
 
 	let { data, children } = $props();
@@ -37,14 +37,14 @@
 			{:else}
 				<button
 					type="button"
-					onclick={() => { authModalMode.set('signin'); showAuthModal.set(true); }}
+					onclick={requestSignIn}
 					class="px-4 py-2 text-sm font-medium rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
 				>
 					Sign in
 				</button>
 				<button
 					type="button"
-					onclick={() => { authModalMode.set('signup'); showAuthModal.set(true); }}
+					onclick={requestSignUp}
 					class="px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition-colors"
 				>
 					Sign up

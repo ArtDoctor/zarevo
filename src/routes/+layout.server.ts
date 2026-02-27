@@ -1,7 +1,7 @@
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
-	let authProviders: { name: string; displayName: string; authUrl: string }[] = [];
+	let authProviders: { name: string; displayName: string; authUrl?: string }[] = [];
 
 	try {
 		const authMethods = await locals.pb.collection('users').listAuthMethods();

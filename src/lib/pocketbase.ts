@@ -43,7 +43,3 @@ export async function checkAuth(): Promise<void> {
 		if (typeof window !== 'undefined') window.location.href = '/home';
 	}
 }
-
-export function createPocketBaseClient(): PocketBase {
-	return pb;
-}
