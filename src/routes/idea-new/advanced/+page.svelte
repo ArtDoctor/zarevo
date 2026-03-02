@@ -2,4 +2,4 @@
 	import AdvancedValidation from '$lib/components/AdvancedValidation.svelte';
 </script>
 
-<AdvancedValidation backHref="/home" backLabel="Back to home" />
+<AdvancedValidation backHref="/idea-new" backLabel="Back to new idea" redirectIfAuthenticated={false} />

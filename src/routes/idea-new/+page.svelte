@@ -20,5 +20,5 @@
 		Imagine a startup. Now validate it.
 	</h2>
 
-	<IdeaInput onSubmit={handleSubmit} />
+	<IdeaInput onSubmit={handleSubmit} advancedPath="/idea-new/advanced" />
 </div>
