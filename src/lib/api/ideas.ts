@@ -1,6 +1,6 @@
 import { goto } from '$app/navigation';
 import { getBackendUrl } from '$lib/config';
-import { pb } from '$lib/pocketbase';
+import { getAuthHeaders, pb } from '$lib/pocketbase';
 
 export interface CreateIdeaPayload {
 	description: string;
@@ -27,9 +27,8 @@ export async function createIdeaAndNavigate(payload: CreateIdeaPayload): Promise
 	const url = `${backendUrl.replace(/\/$/, '')}/api/ideas/new`;
 	const res = await fetch(url, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
 		body: JSON.stringify({
-			user_id: userId,
 			description: payload.description,
 			problem: payload.problem,
 			customer: payload.customer,

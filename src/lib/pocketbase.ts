@@ -6,6 +6,18 @@ const pb = new PocketBase(env.PUBLIC_PB_URL || 'http://127.0.0.1:8090');
 
 export { pb };
 
+export function getAuthHeaders(): Record<string, string> {
+	const headers: Record<string, string> = {};
+	if (pb.authStore.token) {
+		headers['Authorization'] = `Bearer ${pb.authStore.token}`;
+	}
+	const userId = pb.authStore.model?.id;
+	if (userId) {
+		headers['X-Pocketbase-Id'] = userId;
+	}
+	return headers;
+}
+
 export const currentUser = writable(pb.authStore.model);
 
 pb.authStore.onChange(() => {
