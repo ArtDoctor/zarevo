@@ -1,16 +1,9 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
-	import { pb } from '$lib/pocketbase';
 	import IdeaInput from '$lib/components/IdeaInput.svelte';
 	import { setValidationForm } from '$lib/stores/validation-form';
 	import { requestSignIn } from '$lib/stores/auth-modal';
-
-	onMount(() => {
-		if (pb.authStore.isValid) {
-			goto('/', { replaceState: true });
-		}
-	});
+	import { pb } from '$lib/pocketbase';
+	import { goto } from '$app/navigation';
 
 	function handleSubmit(startupIdea: string) {
 		setValidationForm({ startupIdea });
