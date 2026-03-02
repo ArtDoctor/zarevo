@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { checkAuth } from '$lib/pocketbase';
 	import { pb } from '$lib/pocketbase';
 	import { page } from '$app/state';
@@ -28,8 +28,14 @@
 
 	const id = $derived(page.params.id);
 
-	onMount(async () => {
-		await checkAuth();
+	function shouldPoll(i: Idea | null): boolean {
+		if (!i) return false;
+		if (!i.title || i.title === 'none') return true;
+		const analyses = i.expand?.analyses ?? [];
+		return analyses.some((a) => a.status === 'in_progress' || a.status === 'pending');
+	}
+
+	async function fetchIdea(): Promise<void> {
 		if (!id) return;
 		try {
 			const record = await pb.collection('ideas').getOne<Idea>(id, { expand: 'analyses' });
@@ -39,6 +45,23 @@
 		} finally {
 			loading = false;
 		}
+	}
+
+	let pollInterval: ReturnType<typeof setInterval> | null = null;
+
+	onMount(async () => {
+		await checkAuth();
+		if (!id) return;
+		await fetchIdea();
+
+		pollInterval = setInterval(async () => {
+			if (!shouldPoll(idea)) return;
+			await fetchIdea();
+		}, 2000);
+	});
+
+	onDestroy(() => {
+		if (pollInterval) clearInterval(pollInterval);
 	});
 
 	function statusColor(status: string): string {
