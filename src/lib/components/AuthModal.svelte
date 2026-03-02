@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { get } from 'svelte/store';
 	import { pb } from '$lib/pocketbase';
 	import { validateEmail, validateOTPCode, validatePassword } from '$lib/form-validations/login-validation';
 	import { goto } from '$app/navigation';
+	import { validationFormStore, clearValidationForm } from '$lib/stores/validation-form';
+	import { createIdeaAndNavigate } from '$lib/api/ideas';
 
 	interface Props {
 		mode: 'signin' | 'signup';
@@ -35,9 +38,24 @@
 		onclose?.();
 	}
 
-	function onAuthSuccess() {
+	async function onAuthSuccess() {
 		closeModal();
-		goto('/', { replaceState: true });
+		const stored = get(validationFormStore);
+		if (stored.startupIdea.trim()) {
+			try {
+				await createIdeaAndNavigate({
+					description: stored.startupIdea,
+					problem: stored.problem ?? '',
+					customer: stored.customer ?? '',
+					founder_specific: stored.founder_specific ?? ''
+				});
+				clearValidationForm();
+			} catch {
+				goto('/', { replaceState: true });
+			}
+		} else {
+			goto('/', { replaceState: true });
+		}
 	}
 
 	function extractAuthError(e: unknown, fallback: string): string {

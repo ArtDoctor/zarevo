@@ -21,3 +21,7 @@ export const validationFormStore = writable<ValidationFormData>(initial);
 export function setValidationForm(data: Partial<ValidationFormData>) {
 	validationFormStore.update((prev) => ({ ...prev, ...data }));
 }
+
+export function clearValidationForm() {
+	validationFormStore.set({ ...initial });
+}
