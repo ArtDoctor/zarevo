@@ -5,6 +5,7 @@
 	import { pb } from '$lib/pocketbase';
 	import { validationFormStore, setValidationForm } from '$lib/stores/validation-form';
 	import { requestSignIn } from '$lib/stores/auth-modal';
+	import { createIdeaAndNavigate } from '$lib/api/ideas';
 
 	interface Props {
 		backHref: string;
@@ -15,10 +16,12 @@
 	let { backHref, backLabel, redirectIfAuthenticated = true }: Props = $props();
 
 	let mainInput = $state('');
-	let targetMarket = $state('');
+	let geography = $state('');
 	let problem = $state('');
-	let solution = $state('');
-	let competitors = $state('');
+	let customer = $state('');
+	let founder_specific = $state('');
+	let submitting = $state(false);
+	let error = $state<string | null>(null);
 
 	onMount(() => {
 		if (redirectIfAuthenticated && pb.authStore.isValid) {
@@ -26,24 +29,37 @@
 		}
 		const stored = get(validationFormStore);
 		mainInput = stored.startupIdea;
-		targetMarket = stored.targetMarket;
+		geography = stored.geography;
 		problem = stored.problem;
-		solution = stored.solution;
-		competitors = stored.competitors;
+		customer = stored.customer;
+		founder_specific = stored.founder_specific;
 	});
 
-	function handleSubmit() {
+	async function handleSubmit() {
 		setValidationForm({
 			startupIdea: mainInput,
-			targetMarket,
+			geography,
 			problem,
-			solution,
-			competitors
+			customer,
+			founder_specific
 		});
-		if (pb.authStore.isValid) {
-			goto('/');
-		} else {
+		if (!pb.authStore.isValid) {
 			requestSignIn();
+			return;
+		}
+		submitting = true;
+		error = null;
+		try {
+			await createIdeaAndNavigate({
+				description: mainInput,
+				problem,
+				customer,
+				founder_specific
+			});
+		} catch (e) {
+			error = e instanceof Error ? e.message : 'Failed to create idea';
+		} finally {
+			submitting = false;
 		}
 	}
 </script>
@@ -57,6 +73,9 @@
 	</a>
 	<h1 class="text-2xl font-semibold text-zinc-800 dark:text-zinc-200 mb-8">Advanced Validation</h1>
 
+	{#if error}
+		<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
+	{/if}
 	<form
 		onsubmit={(e) => {
 			e.preventDefault();
@@ -78,14 +97,14 @@
 		</div>
 
 		<div>
-			<label for="market" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-				Target market
+			<label for="geography" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+				Geography
 			</label>
 			<input
-				id="market"
+				id="geography"
 				type="text"
-				bind:value={targetMarket}
-				placeholder="Who are your customers?"
+				bind:value={geography}
+				placeholder="Geographic region to focus on"
 				class="w-full px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
 			/>
 		</div>
@@ -97,41 +116,42 @@
 			<textarea
 				id="problem"
 				bind:value={problem}
-				placeholder="What problem does it solve?"
+				placeholder="What is the problem you are exactly trying to solve? How are you different from competitors?"
 				class="w-full h-20 px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
 				rows="3"
 			></textarea>
 		</div>
 
 		<div>
-			<label for="solution" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-				Solution
-			</label>
-			<textarea
-				id="solution"
-				bind:value={solution}
-				placeholder="How does your product solve it?"
-				class="w-full h-20 px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
-				rows="3"
-			></textarea>
-		</div>
-
-		<div>
-			<label for="competitors" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-				Competitors
+			<label for="customer" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+				Customer
 			</label>
 			<input
-				id="competitors"
+				id="customer"
 				type="text"
-				bind:value={competitors}
-				placeholder="Who else is in this space?"
+				bind:value={customer}
+				placeholder="What's your target customer?"
 				class="w-full px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
 			/>
 		</div>
 
+		<div>
+			<label for="founder_specific" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+				Founder specific
+			</label>
+			<textarea
+				id="founder_specific"
+				bind:value={founder_specific}
+				placeholder="What do you have that you think gives you an advantage?"
+				class="w-full h-20 px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
+				rows="3"
+			></textarea>
+		</div>
+
 		<button
 			type="submit"
-			class="w-full py-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-lg transition-colors"
+			disabled={submitting}
+			class="w-full py-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 		>
 			Validate
 		</button>

@@ -5,6 +5,10 @@
 	import IdeaInput from '$lib/components/IdeaInput.svelte';
 	import { setValidationForm } from '$lib/stores/validation-form';
 	import { requestSignIn } from '$lib/stores/auth-modal';
+	import { createIdeaAndNavigate } from '$lib/api/ideas';
+
+	let submitting = $state(false);
+	let error = $state<string | null>(null);
 
 	onMount(() => {
 		if (pb.authStore.isValid) {
@@ -12,12 +16,25 @@
 		}
 	});
 
-	function handleSubmit(startupIdea: string) {
+	async function handleSubmit(startupIdea: string) {
 		setValidationForm({ startupIdea });
-		if (pb.authStore.isValid) {
-			goto('/');
-		} else {
+		if (!pb.authStore.isValid) {
 			requestSignIn();
+			return;
+		}
+		submitting = true;
+		error = null;
+		try {
+			await createIdeaAndNavigate({
+				description: startupIdea,
+				problem: '',
+				customer: '',
+				founder_specific: ''
+			});
+		} catch (e) {
+			error = e instanceof Error ? e.message : 'Failed to create idea';
+		} finally {
+			submitting = false;
 		}
 	}
 </script>
@@ -27,5 +44,8 @@
 		Imagine a startup. Now validate it.
 	</h2>
 
-	<IdeaInput onSubmit={handleSubmit} />
+	{#if error}
+		<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
+	{/if}
+	<IdeaInput onSubmit={handleSubmit} disabled={submitting} />
 </div>

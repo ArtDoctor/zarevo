@@ -5,9 +5,10 @@
 		onSubmit: (startupIdea: string) => void;
 		showAdvanced?: boolean;
 		advancedPath?: string;
+		disabled?: boolean;
 	}
 
-	let { onSubmit, showAdvanced = true, advancedPath = '/home/advanced' }: Props = $props();
+	let { onSubmit, showAdvanced = true, advancedPath = '/home/advanced', disabled = false }: Props = $props();
 
 	let startupIdea = $state('');
 </script>
@@ -29,7 +30,8 @@
 	<div class="flex flex-col sm:flex-row gap-3 justify-center">
 		<button
 			type="submit"
-			class="px-8 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium transition-colors"
+			disabled={disabled}
+			class="px-8 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 		>
 			Validate
 		</button>

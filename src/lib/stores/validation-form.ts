@@ -2,18 +2,18 @@ import { writable } from 'svelte/store';
 
 export interface ValidationFormData {
 	startupIdea: string;
-	targetMarket: string;
+	geography: string;
 	problem: string;
-	solution: string;
-	competitors: string;
+	customer: string;
+	founder_specific: string;
 }
 
 const initial: ValidationFormData = {
 	startupIdea: '',
-	targetMarket: '',
+	geography: '',
 	problem: '',
-	solution: '',
-	competitors: ''
+	customer: '',
+	founder_specific: ''
 };
 
 export const validationFormStore = writable<ValidationFormData>(initial);
