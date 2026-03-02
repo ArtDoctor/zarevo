@@ -48,6 +48,12 @@
 		deleting = true;
 		try {
 			for (const id of selectedIds) {
+				const analyses = await pb.collection('analyses').getFullList<{ id: string }>({
+					filter: `idea = "${id}"`
+				});
+				for (const a of analyses) {
+					await pb.collection('analyses').delete(a.id);
+				}
 				await pb.collection('ideas').delete(id);
 			}
 			ideas = ideas.filter((i) => !selectedIds.has(i.id));
