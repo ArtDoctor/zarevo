@@ -94,7 +94,8 @@
 					email,
 					password,
 					passwordConfirm: passwordConfirm,
-					emailVisibility: false
+					emailVisibility: false,
+					credits: 3
 				});
 			}
 			const result = await pb.collection('users').requestOTP(email);
@@ -141,7 +142,10 @@
 		loading = true;
 
 		try {
-			await pb.collection('users').authWithOAuth2({ provider: providerName });
+			await pb.collection('users').authWithOAuth2({
+				provider: providerName,
+				createData: { credits: 3 }
+			});
 			onAuthSuccess();
 		} catch (e: unknown) {
 			error = extractAuthError(e, 'OAuth login failed. Please try again.');
