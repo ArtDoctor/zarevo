@@ -8,6 +8,10 @@
 
 	let { data, children } = $props();
 
+	const isSubdomain = $derived(!!data.subdomain);
+	const smokeContent = $derived(data.smokeContent);
+	const subdomainNotFound = $derived(!!data.notFound);
+
 	let profilePopupOpen = $state(false);
 	let profileMenuEl = $state<HTMLDivElement | undefined>(undefined);
 
@@ -31,6 +35,18 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
+{#if isSubdomain}
+	{#if subdomainNotFound}
+		<main class="min-h-screen flex flex-col items-center justify-center px-4">
+			<h1 class="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">404</h1>
+			<p class="mt-2 text-zinc-600 dark:text-zinc-400">Not found</p>
+		</main>
+	{:else}
+		<main class="min-h-screen p-4">
+			<pre class="text-sm text-zinc-800 dark:text-zinc-200 overflow-auto">{JSON.stringify(smokeContent ?? null, null, 2)}</pre>
+		</main>
+	{/if}
+{:else}
 <header class="sticky top-0 z-40 border-b border-zinc-200 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md">
 	<nav class="max-w-6xl mx-auto px-4 py-3 flex items-center">
 		<a href="/home" class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 shrink-0">
@@ -140,8 +156,9 @@
 <main class="min-h-[calc(100vh-56px)]">
 	{@render children()}
 </main>
+{/if}
 
-{#if $showAuthModal}
+{#if !isSubdomain && $showAuthModal}
 	<AuthModal
 		mode={$authModalMode}
 		authProviders={data.authProviders ?? []}
