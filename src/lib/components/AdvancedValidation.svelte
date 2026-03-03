@@ -2,15 +2,19 @@
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { goto } from '$app/navigation';
-	import { pb } from '$lib/pocketbase';
+	import { currentUser, pb } from '$lib/pocketbase';
 	import { validationFormStore, setValidationForm } from '$lib/stores/validation-form';
 	import { requestSignIn } from '$lib/stores/auth-modal';
-	import { createIdeaAndNavigate } from '$lib/api/ideas';
+	import { createIdeaAndNavigate, createIdeaAdvancedAndNavigate } from '$lib/api/ideas';
 
 	interface Props {
 		backHref: string;
 		backLabel: string;
 		redirectIfAuthenticated?: boolean;
+	}
+
+	interface UserRecord {
+		credits?: number;
 	}
 
 	let { backHref, backLabel, redirectIfAuthenticated = true }: Props = $props();
@@ -22,6 +26,9 @@
 	let founder_specific = $state('');
 	let submitting = $state(false);
 	let error = $state<string | null>(null);
+
+	const user = $derived($currentUser as UserRecord | null);
+	const credits = $derived(user?.credits ?? 0);
 
 	onMount(() => {
 		if (redirectIfAuthenticated && pb.authStore.isValid) {
@@ -35,7 +42,14 @@
 		founder_specific = stored.founder_specific;
 	});
 
-	async function handleSubmit() {
+	const payload = $derived({
+		description: mainInput,
+		problem,
+		customer,
+		founder_specific
+	});
+
+	async function handleSubmitBasic() {
 		setValidationForm({
 			startupIdea: mainInput,
 			geography,
@@ -47,15 +61,41 @@
 			requestSignIn();
 			return;
 		}
+		if (credits < 1) {
+			error = 'Basic validation requires at least 1 credit';
+			return;
+		}
 		submitting = true;
 		error = null;
 		try {
-			await createIdeaAndNavigate({
-				description: mainInput,
-				problem,
-				customer,
-				founder_specific
-			});
+			await createIdeaAndNavigate(payload);
+		} catch (e) {
+			error = e instanceof Error ? e.message : 'Failed to create idea';
+		} finally {
+			submitting = false;
+		}
+	}
+
+	async function handleSubmitPro() {
+		setValidationForm({
+			startupIdea: mainInput,
+			geography,
+			problem,
+			customer,
+			founder_specific
+		});
+		if (!pb.authStore.isValid) {
+			requestSignIn();
+			return;
+		}
+		if (credits < 4) {
+			error = 'Pro validation requires at least 4 credits';
+			return;
+		}
+		submitting = true;
+		error = null;
+		try {
+			await createIdeaAdvancedAndNavigate(payload);
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Failed to create idea';
 		} finally {
@@ -79,7 +119,7 @@
 	<form
 		onsubmit={(e) => {
 			e.preventDefault();
-			handleSubmit();
+			handleSubmitBasic();
 		}}
 		class="space-y-6"
 	>
@@ -148,12 +188,24 @@
 			></textarea>
 		</div>
 
-		<button
-			type="submit"
-			disabled={submitting}
-			class="w-full py-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-		>
-			Validate
-		</button>
+		<div class="flex flex-col sm:flex-row gap-3">
+			<button
+				type="submit"
+				disabled={submitting || credits < 1}
+				title={credits < 1 ? 'Requires at least 1 credit' : ''}
+				class="flex-1 py-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+			>
+				Validate - basic
+			</button>
+			<button
+				type="button"
+				onclick={handleSubmitPro}
+				disabled={submitting || credits < 4}
+				title={credits < 4 ? 'Requires at least 4 credits' : ''}
+				class="flex-1 py-4 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-semibold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+			>
+				Validate - pro
+			</button>
+		</div>
 	</form>
 </div>

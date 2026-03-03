@@ -3,14 +3,26 @@
 
 	interface Props {
 		onSubmit: (startupIdea: string) => void;
-		showAdvanced?: boolean;
+		onSubmitPro: (startupIdea: string) => void;
 		advancedPath?: string;
+		credits?: number;
+		isAuthenticated?: boolean;
 		disabled?: boolean;
 	}
 
-	let { onSubmit, showAdvanced = true, advancedPath = '/home/advanced', disabled = false }: Props = $props();
+	let {
+		onSubmit,
+		onSubmitPro,
+		advancedPath = '/home/advanced',
+		credits = 0,
+		isAuthenticated = false,
+		disabled = false
+	}: Props = $props();
 
 	let startupIdea = $state('');
+
+	const canBasic = $derived(!isAuthenticated || credits >= 1);
+	const canPro = $derived(!isAuthenticated || credits >= 4);
 </script>
 
 <form
@@ -30,19 +42,28 @@
 	<div class="flex flex-col sm:flex-row gap-3 justify-center">
 		<button
 			type="submit"
-			disabled={disabled}
+			disabled={disabled || !canBasic}
+			title={!canBasic ? 'Requires at least 1 credit' : ''}
 			class="px-8 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 		>
-			Validate
+			Validate - basic
 		</button>
-		{#if showAdvanced}
-			<button
-				type="button"
-				onclick={() => goto(advancedPath)}
-				class="px-8 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-medium transition-colors"
-			>
-				Advanced
-			</button>
-		{/if}
+		<button
+			type="button"
+			onclick={() => onSubmitPro(startupIdea)}
+			disabled={disabled || !canPro}
+			title={!canPro ? 'Requires at least 4 credits' : ''}
+			class="px-8 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+		>
+			Validate - pro
+		</button>
+		<button
+			type="button"
+			onclick={() => goto(advancedPath)}
+			disabled={disabled}
+			class="px-8 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+		>
+			Advanced
+		</button>
 	</div>
 </form>

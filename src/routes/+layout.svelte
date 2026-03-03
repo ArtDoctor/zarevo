@@ -6,9 +6,14 @@
 	import { showAuthModal, authModalMode, requestSignIn, requestSignUp } from '$lib/stores/auth-modal';
 	import { goto } from '$app/navigation';
 
+	interface UserRecord {
+		credits?: number;
+	}
+
 	let { data, children } = $props();
 
 	const isSubdomain = $derived(!!data.subdomain);
+	const credits = $derived(($currentUser as UserRecord | null)?.credits ?? 0);
 	const smokeContent = $derived(data.smokeContent);
 	const subdomainNotFound = $derived(!!data.notFound);
 
@@ -55,6 +60,9 @@
 
 		{#if $currentUser}
 			<div class="flex items-center gap-3 ml-auto">
+				<span class="text-sm font-medium text-zinc-600 dark:text-zinc-400" title="Credits">
+					{credits} credits
+				</span>
 				<a
 					href="/idea-new"
 					class="px-4 py-2 text-sm font-medium rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
