@@ -24,7 +24,7 @@
 	});
 
 	async function handleSubmit(startupIdea: string) {
-		setValidationForm({ startupIdea });
+		setValidationForm({ startupIdea, validationType: 'basic' });
 		if (!pb.authStore.isValid) {
 			requestSignIn();
 			return;
@@ -50,7 +50,7 @@
 	}
 
 	async function handleSubmitPro(startupIdea: string) {
-		setValidationForm({ startupIdea });
+		setValidationForm({ startupIdea, validationType: 'pro' });
 		if (!pb.authStore.isValid) {
 			requestSignIn();
 			return;

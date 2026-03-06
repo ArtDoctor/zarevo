@@ -4,7 +4,7 @@
 	import { validateEmail, validateOTPCode, validatePassword } from '$lib/form-validations/login-validation';
 	import { goto } from '$app/navigation';
 	import { validationFormStore, clearValidationForm } from '$lib/stores/validation-form';
-	import { createIdeaAndNavigate } from '$lib/api/ideas';
+	import { createIdeaAndNavigate, createIdeaAdvancedAndNavigate } from '$lib/api/ideas';
 
 	interface Props {
 		mode: 'signin' | 'signup';
@@ -43,12 +43,21 @@
 		const stored = get(validationFormStore);
 		if (stored.startupIdea.trim()) {
 			try {
-				await createIdeaAndNavigate({
-					description: stored.startupIdea,
-					problem: stored.problem ?? '',
-					customer: stored.customer ?? '',
-					founder_specific: stored.founder_specific ?? ''
-				});
+				if (stored.validationType === 'pro') {
+					await createIdeaAdvancedAndNavigate({
+						description: stored.startupIdea,
+						problem: stored.problem ?? '',
+						customer: stored.customer ?? '',
+						founder_specific: stored.founder_specific ?? ''
+					});
+				} else {
+					await createIdeaAndNavigate({
+						description: stored.startupIdea,
+						problem: stored.problem ?? '',
+						customer: stored.customer ?? '',
+						founder_specific: stored.founder_specific ?? ''
+					});
+				}
 				clearValidationForm();
 			} catch {
 				goto('/', { replaceState: true });

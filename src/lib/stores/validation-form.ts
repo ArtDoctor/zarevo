@@ -6,6 +6,7 @@ export interface ValidationFormData {
 	problem: string;
 	customer: string;
 	founder_specific: string;
+	validationType: 'basic' | 'pro' | null;
 }
 
 const initial: ValidationFormData = {
@@ -13,7 +14,8 @@ const initial: ValidationFormData = {
 	geography: '',
 	problem: '',
 	customer: '',
-	founder_specific: ''
+	founder_specific: '',
+	validationType: null
 };
 
 export const validationFormStore = writable<ValidationFormData>(initial);
