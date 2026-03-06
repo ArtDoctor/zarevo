@@ -54,7 +54,7 @@
 {:else}
 <header class="sticky top-0 z-40 border-b surface-blur">
 	<nav class="max-w-6xl mx-auto px-4 py-3 flex items-center">
-		<a href="/home" class="text-lg font-semibold shrink-0">
+		<a href={$currentUser ? "/" : "/home"} class="text-lg font-semibold shrink-0">
 			Zarevo
 		</a>
 
@@ -64,13 +64,13 @@
 					{credits} credits
 				</span>
 				<a
-					href="/idea-new"
+					href="/"
 					class="btn btn-md btn-secondary"
 				>
 					New idea
 				</a>
 				<a
-					href="/"
+					href="/your-ideas"
 					class="btn btn-md btn-secondary"
 				>
 					Your ideas
