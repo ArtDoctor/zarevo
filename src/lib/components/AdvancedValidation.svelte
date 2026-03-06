@@ -107,11 +107,11 @@
 <div class="max-w-2xl mx-auto py-12 px-4">
 	<a
 		href={backHref}
-		class="inline-flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400 mb-6"
+		class="inline-flex items-center gap-2 text-sm text-muted hover:text-primary mb-6"
 	>
 		← {backLabel}
 	</a>
-	<h1 class="text-2xl font-semibold text-zinc-800 dark:text-zinc-200 mb-8">Advanced Validation</h1>
+	<h1 class="text-2xl mb-8">Advanced Validation</h1>
 
 	{#if error}
 		<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
@@ -131,7 +131,8 @@
 				id="main"
 				bind:value={mainInput}
 				placeholder="Describe your startup idea..."
-				class="w-full h-24 px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
+				class="w-full h-24 px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent resize-none"
+				style="--tw-ring-color: var(--color-primary);"
 				rows="4"
 			></textarea>
 		</div>
@@ -145,7 +146,8 @@
 				type="text"
 				bind:value={geography}
 				placeholder="Geographic region to focus on"
-				class="w-full px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+				class="w-full px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent"
+				style="--tw-ring-color: var(--color-primary);"
 			/>
 		</div>
 
@@ -157,7 +159,8 @@
 				id="problem"
 				bind:value={problem}
 				placeholder="What is the problem you are exactly trying to solve? How are you different from competitors?"
-				class="w-full h-20 px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
+				class="w-full h-20 px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent resize-none"
+				style="--tw-ring-color: var(--color-primary);"
 				rows="3"
 			></textarea>
 		</div>
@@ -171,7 +174,8 @@
 				type="text"
 				bind:value={customer}
 				placeholder="What's your target customer?"
-				class="w-full px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+				class="w-full px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent"
+				style="--tw-ring-color: var(--color-primary);"
 			/>
 		</div>
 
@@ -183,7 +187,8 @@
 				id="founder_specific"
 				bind:value={founder_specific}
 				placeholder="What do you have that you think gives you an advantage?"
-				class="w-full h-20 px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
+				class="w-full h-20 px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent resize-none"
+				style="--tw-ring-color: var(--color-primary);"
 				rows="3"
 			></textarea>
 		</div>
@@ -193,7 +198,7 @@
 				type="submit"
 				disabled={submitting || credits < 1}
 				title={credits < 1 ? 'Requires at least 1 credit' : ''}
-				class="flex-1 py-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+				class="btn btn-lg btn-primary flex-1 text-lg py-4"
 			>
 				Validate - basic
 			</button>
@@ -202,7 +207,7 @@
 				onclick={handleSubmitPro}
 				disabled={submitting || credits < 4}
 				title={credits < 4 ? 'Requires at least 4 credits' : ''}
-				class="flex-1 py-4 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-semibold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+				class="btn btn-lg btn-secondary flex-1 text-lg py-4"
 			>
 				Validate - pro
 			</button>

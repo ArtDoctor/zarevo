@@ -35,8 +35,9 @@
 	<textarea
 		bind:value={startupIdea}
 		placeholder="Describe your startup idea..."
-		class="w-full h-32 md:h-40 px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none text-lg"
+		class="w-full h-32 md:h-40 px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent resize-none text-lg"
 		rows="5"
+		style="--tw-ring-color: var(--color-primary);"
 	></textarea>
 
 	<div class="flex flex-col sm:flex-row gap-3 justify-center">
@@ -44,7 +45,7 @@
 			type="submit"
 			disabled={disabled || !canBasic}
 			title={!canBasic ? 'Requires at least 1 credit' : ''}
-			class="px-8 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+			class="btn btn-lg btn-primary"
 		>
 			Validate - basic
 		</button>
@@ -53,7 +54,7 @@
 			onclick={() => onSubmitPro(startupIdea)}
 			disabled={disabled || !canPro}
 			title={!canPro ? 'Requires at least 4 credits' : ''}
-			class="px-8 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+			class="btn btn-lg btn-secondary"
 		>
 			Validate - pro
 		</button>
@@ -61,7 +62,7 @@
 			type="button"
 			onclick={() => goto(advancedPath)}
 			disabled={disabled}
-			class="px-8 py-3 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+			class="btn btn-lg btn-secondary"
 		>
 			Advanced
 		</button>

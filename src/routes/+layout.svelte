@@ -43,35 +43,35 @@
 {#if isSubdomain}
 	{#if subdomainNotFound}
 		<main class="min-h-screen flex flex-col items-center justify-center px-4">
-			<h1 class="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">404</h1>
-			<p class="mt-2 text-zinc-600 dark:text-zinc-400">Not found</p>
+			<h1 class="text-2xl font-semibold">404</h1>
+			<p class="mt-2 text-muted">Not found</p>
 		</main>
 	{:else}
 		<main class="min-h-screen p-4">
-			<pre class="text-sm text-zinc-800 dark:text-zinc-200 overflow-auto">{JSON.stringify(smokeContent ?? null, null, 2)}</pre>
+			<pre class="text-sm font-mono overflow-auto">{JSON.stringify(smokeContent ?? null, null, 2)}</pre>
 		</main>
 	{/if}
 {:else}
-<header class="sticky top-0 z-40 border-b border-zinc-200 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md">
+<header class="sticky top-0 z-40 border-b surface-blur">
 	<nav class="max-w-6xl mx-auto px-4 py-3 flex items-center">
-		<a href="/home" class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 shrink-0">
+		<a href="/home" class="text-lg font-semibold shrink-0">
 			Zarevo
 		</a>
 
 		{#if $currentUser}
 			<div class="flex items-center gap-3 ml-auto">
-				<span class="text-sm font-medium text-zinc-600 dark:text-zinc-400" title="Credits">
+				<span class="text-sm font-mono text-muted" title="Credits">
 					{credits} credits
 				</span>
 				<a
 					href="/idea-new"
-					class="px-4 py-2 text-sm font-medium rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+					class="btn btn-md btn-secondary"
 				>
 					New idea
 				</a>
 				<a
 					href="/"
-					class="px-4 py-2 text-sm font-medium rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+					class="btn btn-md btn-secondary"
 				>
 					Your ideas
 				</a>
@@ -79,7 +79,7 @@
 					<button
 						type="button"
 						onclick={() => (profilePopupOpen = !profilePopupOpen)}
-						class="p-2 rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+						class="p-2 rounded-md border border-neutral-700 hover:bg-neutral-800 transition-colors"
 						aria-label="Profile menu"
 					>
 						<svg
@@ -100,19 +100,19 @@
 					</button>
 					{#if profilePopupOpen}
 						<div
-							class="absolute right-0 mt-1 py-1 w-40 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-lg z-50"
+							class="absolute right-0 mt-1 py-1 w-40 surface-blur z-50"
 						>
 							<a
 								href="/profile"
 								onclick={() => (profilePopupOpen = false)}
-								class="block px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+								class="block px-4 py-2 text-sm hover:bg-neutral-800 rounded-md"
 							>
 								Profile
 							</a>
 							<button
 								type="button"
 								onclick={handleLogout}
-								class="block w-full text-left px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+								class="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-800 rounded-md"
 							>
 								Sign out
 							</button>
@@ -124,19 +124,19 @@
 			<div class="flex-1 flex justify-center gap-12 mx-8">
 				<a
 					href="/features"
-					class="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+					class="px-3 py-2 text-sm font-medium text-muted hover:text-white transition-colors"
 				>
 					Features
 				</a>
 				<a
 					href="/pricing"
-					class="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+					class="px-3 py-2 text-sm font-medium text-muted hover:text-white transition-colors"
 				>
 					Pricing
 				</a>
 				<a
 					href="/faq"
-					class="px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+					class="px-3 py-2 text-sm font-medium text-muted hover:text-white transition-colors"
 				>
 					FAQ
 				</a>
@@ -145,14 +145,14 @@
 				<button
 					type="button"
 					onclick={requestSignIn}
-					class="px-4 py-2 text-sm font-medium rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+					class="btn btn-md btn-ghost"
 				>
 					Sign in
 				</button>
 				<button
 					type="button"
 					onclick={requestSignUp}
-					class="px-4 py-2 text-sm font-medium rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition-colors"
+					class="btn btn-md btn-primary"
 				>
 					Sign up
 				</button>

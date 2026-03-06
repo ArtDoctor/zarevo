@@ -100,7 +100,7 @@
 </script>
 
 <div class="max-w-2xl mx-auto py-12 px-4">
-	<h1 class="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Profile</h1>
+	<h1 class="text-2xl">Profile</h1>
 	<p class="mt-1 text-zinc-600 dark:text-zinc-400">Your account settings and preferences.</p>
 
 	{#if user}
@@ -129,12 +129,13 @@
 								type="text"
 								bind:value={newName}
 								placeholder="Your name"
-								class="px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+								class="px-3 py-2 rounded-lg border border-neutral-700 bg-neutral-800 text-white focus:outline-none focus:ring-2"
+								style="--tw-ring-color: var(--color-primary);"
 							/>
 							<button
 								type="submit"
 								disabled={savingName}
-								class="px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium disabled:opacity-50"
+								class="btn btn-sm btn-primary"
 							>
 								{savingName ? 'Saving...' : 'Save'}
 							</button>
@@ -156,7 +157,7 @@
 							<button
 								type="button"
 								onclick={startEditName}
-								class="text-sm text-amber-600 dark:text-amber-400 hover:underline"
+								class="text-sm text-primary hover:underline"
 							>
 								Change name
 							</button>

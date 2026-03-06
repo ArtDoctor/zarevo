@@ -219,7 +219,8 @@
 						autocomplete="one-time-code"
 						bind:value={otpCode}
 						placeholder="Enter code from email"
-						class="w-full px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+						class="w-full px-4 py-2.5 rounded-xl border border-neutral-700 bg-neutral-800 text-white focus:outline-none focus:ring-2"
+						style="--tw-ring-color: var(--color-primary);"
 					/>
 				</div>
 				<div class="flex gap-3">
@@ -235,7 +236,7 @@
 						type="button"
 						onclick={handleVerifyOTP}
 						disabled={loading}
-						class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium transition-colors disabled:opacity-50"
+						class="btn btn-md btn-primary flex-1"
 					>
 						{loading ? 'Verifying...' : 'Verify'}
 					</button>
@@ -252,7 +253,8 @@
 						type="email"
 						bind:value={email}
 						placeholder="Enter your email"
-						class="w-full px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+						class="w-full px-4 py-2.5 rounded-xl border border-neutral-700 bg-neutral-800 text-white focus:outline-none focus:ring-2"
+						style="--tw-ring-color: var(--color-primary);"
 					/>
 				</div>
 
@@ -266,7 +268,8 @@
 							type="password"
 							bind:value={password}
 							placeholder="At least 8 characters"
-							class="w-full px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+							class="w-full px-4 py-2.5 rounded-xl border border-neutral-700 bg-neutral-800 text-white focus:outline-none focus:ring-2"
+							style="--tw-ring-color: var(--color-primary);"
 						/>
 					</div>
 					<div>
@@ -278,7 +281,8 @@
 							type="password"
 							bind:value={passwordConfirm}
 							placeholder="Repeat your password"
-							class="w-full px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+							class="w-full px-4 py-2.5 rounded-xl border border-neutral-700 bg-neutral-800 text-white focus:outline-none focus:ring-2"
+							style="--tw-ring-color: var(--color-primary);"
 						/>
 					</div>
 				{/if}
@@ -312,7 +316,7 @@
 				<button
 					type="submit"
 					disabled={loading}
-					class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium transition-colors disabled:opacity-50"
+					class="btn btn-lg btn-primary w-full"
 				>
 					{loading ? 'Sending code...' : (currentMode === 'signin' ? 'Send sign-in code' : 'Create account & send code')}
 				</button>
@@ -325,7 +329,7 @@
 				<button
 					type="button"
 					onclick={switchMode}
-					class="ml-1 font-medium text-amber-600 dark:text-amber-400 hover:underline"
+					class="ml-1 text-primary hover:underline"
 				>
 					{currentMode === 'signin' ? 'Sign up' : 'Sign in'}
 				</button>

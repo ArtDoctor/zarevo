@@ -77,7 +77,7 @@
 </script>
 
 <div class="min-h-[60vh] flex flex-col items-center justify-center px-4">
-	<h2 class="text-2xl md:text-3xl font-semibold text-center text-zinc-800 dark:text-zinc-200 mb-8">
+	<h2 class="text-2xl md:text-3xl text-center mb-8">
 		Imagine a startup. Now validate it.
 	</h2>
 

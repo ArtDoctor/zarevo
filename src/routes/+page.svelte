@@ -80,7 +80,7 @@
 
 <div class="max-w-4xl mx-auto py-12 px-4">
 	<div class="flex flex-wrap items-center gap-4 mb-8">
-		<h1 class="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Your ideas</h1>
+		<h1 class="text-2xl">Your ideas</h1>
 		{#if ideas.length > 0}
 			<label class="flex items-center gap-2 cursor-pointer text-sm text-zinc-600 dark:text-zinc-400">
 				<input
@@ -88,7 +88,8 @@
 					bind:this={selectAllEl}
 					checked={allSelected}
 					onchange={toggleSelectAll}
-					class="rounded border-zinc-300 dark:border-zinc-600 text-amber-500 focus:ring-amber-500"
+					class="rounded border-neutral-700"
+					style="accent-color: var(--color-primary);"
 				/>
 				Select all
 			</label>
@@ -110,12 +111,16 @@
 	{:else if error}
 		<p class="text-red-600 dark:text-red-400">{error}</p>
 	{:else if ideas.length === 0}
-		<p class="text-zinc-600 dark:text-zinc-400">No ideas yet. <a href="/idea-new" class="text-amber-600 dark:text-amber-500 hover:underline">Add one</a>.</p>
+		<p class="text-muted">No ideas yet. <a href="/idea-new" class="text-primary hover:underline">Add one</a>.</p>
 	{:else}
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{#each ideas as idea}
 				<div
-					class="flex gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/50 hover:border-amber-500/50 hover:bg-amber-50/30 dark:hover:bg-amber-950/20 transition-colors"
+					role="group"
+					class="flex gap-3 p-4 rounded-xl border border-neutral-700 bg-neutral-900/50 transition-colors"
+					style="--hover-border: var(--color-primary);"
+					onmouseenter={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
+					onmouseleave={(e) => e.currentTarget.style.borderColor = ''}
 				>
 					<label class="flex items-start pt-0.5 shrink-0 cursor-pointer">
 						<input
@@ -123,7 +128,8 @@
 							checked={selectedIds.has(idea.id)}
 							onchange={() => toggleSelect(idea.id)}
 							onclick={(e) => e.stopPropagation()}
-							class="rounded border-zinc-300 dark:border-zinc-600 text-amber-500 focus:ring-amber-500"
+							class="rounded border-neutral-700"
+							style="accent-color: var(--color-primary);"
 						/>
 					</label>
 					<button
