@@ -73,6 +73,14 @@
 		deployError = null;
 		deploying = true;
 		try {
+			const trimmed = subdomain.trim();
+			const existing = await pb.collection('smokes').getList<{ id: string; domain?: string }>(1, 1, {
+				filter: `domain = "${trimmed.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+			});
+			if (existing.totalItems > 0 && existing.items[0].id !== id) {
+				throw new Error('Domain already taken');
+			}
+
 			const backendUrl = getBackendUrl();
 			if (!backendUrl) {
 				throw new Error('Backend URL is not configured');
@@ -88,7 +96,7 @@
 					smoke_id: id,
 					start_date: new Date().toISOString().split('T')[0],
 					duration,
-					subdomain: subdomain.trim(),
+					subdomain: trimmed,
 					ads_channels
 				})
 			});
