@@ -153,7 +153,13 @@
 		}
 		try {
 			const record = await pb.collection('ideas').getOne<{ features?: unknown }>(id);
-			features = parseFeatures(record.features ?? []);
+			const parsed = parseFeatures(record.features ?? []);
+			if (parsed.length === 0) {
+				error = 'Pro validation required. Basic validation does not include all analyses needed for smoke tests.';
+				loading = false;
+				return;
+			}
+			features = parsed;
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Failed to load idea';
 		} finally {

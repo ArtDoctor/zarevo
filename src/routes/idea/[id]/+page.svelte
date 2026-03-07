@@ -11,6 +11,12 @@
 		result: unknown;
 	}
 
+	interface IdeaFeature {
+		title: string;
+		description?: string;
+		expected_signup_increase_pct: number;
+	}
+
 	interface Idea {
 		id: string;
 		title: string;
@@ -19,14 +25,28 @@
 		customer?: string;
 		founder_specific?: string;
 		analyses?: string[];
+		features?: IdeaFeature[];
 		expand?: { analyses?: Analysis[] };
 	}
 
 	let idea = $state<Idea | null>(null);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
+	let existingSmokeId = $state<string | null>(null);
 
 	const id = $derived(page.params.id);
+	const canBuildSmokeTest = $derived(
+		idea != null &&
+		Array.isArray(idea.features) &&
+		idea.features.length > 0 &&
+		idea.features.every(
+			(f) =>
+				typeof f === 'object' &&
+				f != null &&
+				typeof (f as IdeaFeature).title === 'string' &&
+				typeof (f as IdeaFeature).expected_signup_increase_pct === 'number'
+		)
+	);
 	const polling = $derived(shouldPoll(idea));
 
 	function shouldPoll(i: Idea | null): boolean {
@@ -41,6 +61,13 @@
 		try {
 			const record = await pb.collection('ideas').getOne<Idea>(id, { expand: 'analyses' });
 			idea = record;
+
+			try {
+				const smoke = await pb.collection('smokes').getFirstListItem<{ id: string }>(`idea = "${id}"`);
+				existingSmokeId = smoke.id;
+			} catch {
+				existingSmokeId = null;
+			}
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Failed to load idea';
 		} finally {
@@ -153,13 +180,30 @@
 				</section>
 			{/if}
 
-			<div class="pt-4">
-				<a
-					href="/idea/{id}/smoke-test"
-					class="btn btn-md btn-primary"
-				>
-					Build smoke test
-				</a>
+			<div class="pt-4 flex flex-wrap gap-3">
+				{#if existingSmokeId}
+					<a
+						href="/smokes/{existingSmokeId}"
+						class="btn btn-md btn-secondary"
+					>
+						View smoke test
+					</a>
+				{/if}
+				{#if canBuildSmokeTest}
+					<a
+						href="/idea/{id}/smoke-test"
+						class="btn btn-md btn-primary"
+					>
+						Build smoke test
+					</a>
+				{:else}
+					<span
+						class="btn btn-md btn-primary opacity-50 cursor-not-allowed"
+						title="Pro validation required – basic validation does not include all analyses needed for smoke tests"
+					>
+						Build smoke test
+					</span>
+				{/if}
 			</div>
 		</article>
 	{/if}
