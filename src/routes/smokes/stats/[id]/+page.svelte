@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 	import { pb } from '$lib/pocketbase';
 
 	interface AdChannel {
@@ -23,6 +24,8 @@
 	let record = $state<SmokeStatsRecord | null>(null);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
+	let deleting = $state(false);
+	let deleteError = $state<string | null>(null);
 
 	const endDate = $derived.by(() => {
 		if (!record?.start_date || record.duration == null) return null;
@@ -75,6 +78,21 @@
 			error = e instanceof Error ? e.message : 'Failed to load stats';
 		} finally {
 			loading = false;
+		}
+	}
+
+	async function deleteSmoke() {
+		if (!id) return;
+		if (!confirm('Delete this smoke test? This cannot be undone.')) return;
+		deleteError = null;
+		deleting = true;
+		try {
+			await pb.collection('smokes').delete(id);
+			goto('/your-ideas');
+		} catch (e) {
+			deleteError = e instanceof Error ? e.message : 'Failed to delete smoke test';
+		} finally {
+			deleting = false;
 		}
 	}
 
@@ -161,6 +179,18 @@
 					<span class="text-white">{formatDate(endDate)}</span>
 				</div>
 			</div>
+
+			{#if deleteError}
+				<p class="text-red-400 text-sm">{deleteError}</p>
+			{/if}
+			<button
+				type="button"
+				onclick={deleteSmoke}
+				disabled={deleting}
+				class="w-full text-sm text-red-400 hover:text-red-300 disabled:opacity-50 py-2 mt-4"
+			>
+				{deleting ? 'Deleting...' : 'Delete smoke test'}
+			</button>
 		</div>
 	{:else}
 		<p class="text-muted">No stats found</p>
