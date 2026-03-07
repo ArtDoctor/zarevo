@@ -33,6 +33,10 @@
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 	let existingSmokeId = $state<string | null>(null);
+	let editingTitle = $state(false);
+	let editTitleValue = $state('');
+	let savingTitle = $state(false);
+	let titleError = $state<string | null>(null);
 
 	const id = $derived(page.params.id);
 	const canBuildSmokeTest = $derived(
@@ -104,6 +108,34 @@
 				return 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300';
 		}
 	}
+
+	function startEditTitle() {
+		editTitleValue = idea?.title ?? '';
+		titleError = null;
+		editingTitle = true;
+	}
+
+	function cancelEditTitle() {
+		editingTitle = false;
+		editTitleValue = '';
+		titleError = null;
+	}
+
+	async function saveTitle() {
+		if (!id || !idea) return;
+		savingTitle = true;
+		titleError = null;
+		try {
+			const updated = await pb.collection('ideas').update<Idea>(id, { title: editTitleValue.trim() });
+			idea = { ...updated, expand: idea.expand };
+			editingTitle = false;
+			editTitleValue = '';
+		} catch (e) {
+			titleError = e instanceof Error ? e.message : 'Failed to update title';
+		} finally {
+			savingTitle = false;
+		}
+	}
 </script>
 
 <div class="max-w-2xl mx-auto py-12 px-4">
@@ -132,7 +164,48 @@
 
 		<article class="space-y-8">
 			<header>
-				<h1 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{idea.title || 'Untitled'}</h1>
+				{#if editingTitle}
+					<form
+						onsubmit={(e) => {
+							e.preventDefault();
+							saveTitle();
+						}}
+						class="flex flex-wrap items-center gap-2"
+					>
+						<input
+							type="text"
+							bind:value={editTitleValue}
+							placeholder="Idea title"
+							class="flex-1 min-w-[200px] px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+						/>
+						<button type="submit" disabled={savingTitle} class="btn btn-sm btn-primary">
+							{savingTitle ? 'Saving...' : 'Save'}
+						</button>
+						<button
+							type="button"
+							onclick={cancelEditTitle}
+							disabled={savingTitle}
+							class="px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm disabled:opacity-50"
+						>
+							Cancel
+						</button>
+					</form>
+					{#if titleError}
+						<p class="mt-1 text-sm text-red-600 dark:text-red-400">{titleError}</p>
+					{/if}
+				{:else}
+					<div class="flex items-center gap-2 flex-wrap">
+						<h1 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{idea.title || 'Untitled'}</h1>
+						<button
+							type="button"
+							onclick={startEditTitle}
+							class="text-sm text-primary hover:underline"
+							title="Edit title"
+						>
+							Edit
+						</button>
+					</div>
+				{/if}
 				{#if idea.description}
 					<p class="mt-2 text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap">{idea.description}</p>
 				{/if}
