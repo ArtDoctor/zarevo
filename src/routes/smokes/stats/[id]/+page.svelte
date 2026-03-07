@@ -11,7 +11,6 @@
 
 	interface SmokeStatsRecord {
 		visits?: number;
-		smokes?: number;
 		ad_channels?: AdChannel[];
 		duration?: number;
 		start_date?: string;
@@ -19,9 +18,16 @@
 		subdomain?: string;
 	}
 
+	interface SmokeEmailRecord {
+		id: string;
+		email: string;
+		additional_info?: string;
+	}
+
 	const id = $derived(page.params.id ?? '');
 
 	let record = $state<SmokeStatsRecord | null>(null);
+	let signUps = $state<SmokeEmailRecord[]>([]);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 	let deleting = $state(false);
@@ -64,16 +70,21 @@
 	async function fetchStats(): Promise<void> {
 		if (!id) return;
 		try {
-			const r = await pb.collection('smokes').getOne<SmokeStatsRecord>(id);
+			const [r, emails] = await Promise.all([
+				pb.collection('smokes').getOne<SmokeStatsRecord>(id),
+				pb.collection('smokes_emails').getFullList<SmokeEmailRecord>({
+					filter: `smoke = "${id}"`
+				})
+			]);
 			record = {
 				visits: r.visits ?? 0,
-				smokes: r.smokes ?? 0,
 				ad_channels: (r.ad_channels ?? []) as AdChannel[],
 				duration: r.duration ?? 0,
 				start_date: r.start_date,
 				domain: r.domain,
 				subdomain: r.subdomain
 			};
+			signUps = emails;
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Failed to load stats';
 		} finally {
@@ -145,10 +156,34 @@
 					<p class="text-2xl font-semibold text-white">{record.visits ?? 0}</p>
 				</div>
 				<div class="rounded-lg border border-neutral-600 bg-neutral-800/50 p-4">
-					<p class="text-sm text-muted">Smokes</p>
-					<p class="text-2xl font-semibold text-white">{record.smokes ?? 0}</p>
+					<p class="text-sm text-muted">Sign ups</p>
+					<p class="text-2xl font-semibold text-white">{signUps.length}</p>
 				</div>
 			</div>
+
+			{#if signUps.length > 0}
+				<div>
+					<p class="text-sm font-medium text-muted mb-2">Sign ups</p>
+					<div class="rounded-lg border border-neutral-600 overflow-hidden">
+						<table class="w-full text-sm">
+							<thead>
+								<tr class="border-b border-neutral-600 bg-neutral-800/50">
+									<th class="text-left px-4 py-3 font-medium text-muted">Email</th>
+									<th class="text-left px-4 py-3 font-medium text-muted">Additional info</th>
+								</tr>
+							</thead>
+							<tbody>
+								{#each signUps as signUp}
+									<tr class="border-b border-neutral-600/50 last:border-b-0 hover:bg-neutral-800/30">
+										<td class="px-4 py-3 text-white">{signUp.email}</td>
+										<td class="px-4 py-3 text-muted">{signUp.additional_info ?? '—'}</td>
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			{/if}
 
 			<div>
 				<p class="text-sm font-medium text-muted mb-2">Ad channels</p>

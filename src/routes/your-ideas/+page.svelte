@@ -19,6 +19,8 @@
 		visits?: number;
 		start_date?: string;
 		duration?: number;
+		domain?: string;
+		subdomain?: string;
 		expand?: { idea?: Idea };
 	}
 
@@ -231,7 +233,7 @@
 							{@const idea = smoke.expand?.idea ?? ideaById.get(smoke.idea)}
 							<button
 								type="button"
-								onclick={() => goto(`/smokes/stats/${smoke.id}`)}
+								onclick={() => goto(smoke.domain || smoke.subdomain ? `/smokes/stats/${smoke.id}` : `/smokes/${smoke.id}`)}
 								class="flex flex-col gap-2 p-4 rounded-xl border border-neutral-700 bg-neutral-900/50 text-left transition-colors hover:border-primary"
 							>
 								<div class="flex items-center justify-between gap-2">
@@ -250,7 +252,7 @@
 								<div class="flex items-center gap-3 text-sm text-muted">
 									<span>{smoke.visits ?? 0} visits</span>
 								</div>
-								<p class="text-xs text-muted">View stats →</p>
+								<p class="text-xs text-muted">{smoke.domain || smoke.subdomain ? 'View stats →' : 'View smoke test →'}</p>
 							</button>
 						{/each}
 					</div>

@@ -5,6 +5,7 @@
 	import { pb } from '$lib/pocketbase';
 	import { getBackendUrl } from '$lib/config';
 	import { getAuthHeaders } from '$lib/pocketbase';
+	import { getContent, buildSmokeHtml } from '$lib/smoke-html';
 
 	type SmokeState = 'queued' | 'in_progress' | 'error' | 'done';
 
@@ -33,17 +34,22 @@
 		Math.ceil(duration / 3) * (1 + selectedChannels.length)
 	);
 
+	let smokeHtml = $state<string | null>(null);
+
 	async function fetchSmoke(): Promise<void> {
 		if (!id) return;
 		try {
-			const record = await pb.collection('smokes').getOne<{ state?: SmokeState; error?: string }>(id);
+			const record = await pb.collection('smokes').getOne<Record<string, unknown> & { state?: SmokeState; error?: string }>(id);
 			smoke = {
 				id,
 				state: (record.state ?? 'queued') as SmokeState,
 				...(record.error && { error: record.error })
 			};
+			const html = getContent(record);
+			smokeHtml = html ? buildSmokeHtml(html) : null;
 		} catch {
 			smoke = { id, state: 'error' as const, error: 'Failed to load smoke test' };
+			smokeHtml = null;
 		} finally {
 			loading = false;
 		}
@@ -53,6 +59,13 @@
 		selectedChannels = selectedChannels.includes(channelId)
 			? selectedChannels.filter((c) => c !== channelId)
 			: [...selectedChannels, channelId];
+	}
+
+	function openPreviewInNewTab() {
+		if (!smokeHtml) return;
+		const url = URL.createObjectURL(new Blob([smokeHtml], { type: 'text/html' }));
+		window.open(url, '_blank', 'noopener,noreferrer');
+		setTimeout(() => URL.revokeObjectURL(url), 1000);
 	}
 
 	async function deploy() {
@@ -135,6 +148,30 @@
 					<p class="text-white font-medium">Smoke test ready</p>
 					<p class="mt-1 text-muted">Deploy your smoke test to start collecting traffic.</p>
 				</div>
+
+				{#if smokeHtml}
+					<div class="space-y-2">
+						<div class="flex items-center justify-between">
+							<p class="text-sm font-medium text-white">Preview</p>
+							<button
+								type="button"
+								onclick={openPreviewInNewTab}
+								class="text-xs text-primary hover:underline"
+							>
+								Open in new tab
+							</button>
+						</div>
+						<div class="rounded-lg border border-neutral-600 bg-neutral-900 overflow-hidden">
+							<iframe
+								title="Smoke test preview"
+								srcdoc={smokeHtml}
+								sandbox="allow-same-origin allow-scripts"
+								class="w-full h-[280px] block border-0"
+							></iframe>
+						</div>
+						<p class="text-xs text-muted">Scroll inside the preview or open in new tab to view full page</p>
+					</div>
+				{/if}
 
 				<form class="space-y-6" onsubmit={(e) => { e.preventDefault(); deploy(); }}>
 					<div>

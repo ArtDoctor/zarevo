@@ -5,6 +5,7 @@
 	import { currentUser, pb } from '$lib/pocketbase';
 	import { showAuthModal, authModalMode, requestSignIn, requestSignUp } from '$lib/stores/auth-modal';
 	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
 
 	interface UserRecord {
 		credits?: number;
@@ -13,6 +14,12 @@
 	let { data, children } = $props();
 
 	const credits = $derived(($currentUser as UserRecord | null)?.credits ?? 0);
+
+	$effect(() => {
+		if (browser && pb.authStore.isValid) {
+			pb.collection('users').authRefresh().catch(() => {});
+		}
+	});
 
 	let profilePopupOpen = $state(false);
 	let profileMenuEl = $state<HTMLDivElement | undefined>(undefined);
