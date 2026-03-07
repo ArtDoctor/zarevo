@@ -52,6 +52,7 @@
 	let cta = $state<string>('get notified');
 	let ctaCustom = $state('');
 	let showCtaCustom = $state(false);
+	let pageInstructions = $state('');
 	let images = $state<File[]>([]);
 	let generating = $state(false);
 	let generateError = $state<string | null>(null);
@@ -123,7 +124,8 @@
 					cta: ctaValue,
 					idea_id: id,
 					features: featuresPayload,
-					images: imageUrls
+					images: imageUrls,
+					user_input: pageInstructions.trim()
 				})
 			});
 
@@ -309,11 +311,24 @@
 					/>
 				</div>
 			{/if}
+
+			<div class="pt-2">
+				<label for="page-instructions" class="block text-sm font-medium text-white mb-2">Page instructions</label>
+				<textarea
+					id="page-instructions"
+					bind:value={pageInstructions}
+					placeholder="Leave blank to let AI decide design and other details"
+					rows="3"
+					class="w-full px-3 py-2 rounded-md border border-neutral-600 bg-neutral-800 text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+				></textarea>
+				<p class="mt-1 text-xs text-muted">Optional. Describe layout, style, or copy preferences.</p>
+			</div>
 		</section>
 
 		<section class="surface-card p-6 space-y-4">
 			<h2 class="text-lg font-medium text-white">Images</h2>
 			<p class="text-sm text-muted">Include mockup/photo of your product if you have it</p>
+			<p class="text-xs text-muted">Images aren't currently used when developing smoke tests; WIP</p>
 			<input
 				type="file"
 				accept="image/*"
