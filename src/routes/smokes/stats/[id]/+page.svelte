@@ -85,10 +85,10 @@
 
 <div class="max-w-2xl mx-auto py-12 px-4">
 	<a
-		href="/smokes/{id}"
+		href="/your-ideas"
 		class="inline-flex items-center gap-1 text-sm text-muted hover:text-white mb-6"
 	>
-		← Back to smoke
+		← Back to your ideas
 	</a>
 
 	<h1 class="text-2xl font-semibold text-white mb-8">Smoke test stats</h1>

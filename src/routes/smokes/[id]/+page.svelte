@@ -28,6 +28,8 @@
 	let selectedChannels = $state<string[]>([]);
 	let deploying = $state(false);
 	let deployError = $state<string | null>(null);
+	let deleting = $state(false);
+	let deleteError = $state<string | null>(null);
 
 	const creditPrice = $derived(
 		Math.ceil(duration / 3) * (1 + selectedChannels.length)
@@ -91,6 +93,21 @@
 		}
 	}
 
+	async function deleteSmoke() {
+		if (!id) return;
+		if (!confirm('Delete this smoke test? This cannot be undone.')) return;
+		deleteError = null;
+		deleting = true;
+		try {
+			await pb.collection('smokes').delete(id);
+			goto('/your-ideas');
+		} catch (e) {
+			deleteError = e instanceof Error ? e.message : 'Failed to delete smoke test';
+		} finally {
+			deleting = false;
+		}
+	}
+
 	onMount(() => {
 		fetchSmoke();
 	});
@@ -123,11 +140,30 @@
 				<p class="mt-1 text-sm text-muted">
 					{smoke.state === 'queued' ? 'Queued' : 'In progress'}
 				</p>
+				<button
+					type="button"
+					onclick={deleteSmoke}
+					disabled={deleting}
+					class="mt-8 text-sm text-red-400 hover:text-red-300 disabled:opacity-50"
+				>
+					{deleting ? 'Deleting...' : 'Delete smoke test'}
+				</button>
 			</div>
 		{:else if smoke.state === 'error'}
-			<div class="surface-card p-8 text-center">
+			<div class="surface-card p-8 text-center space-y-4">
 				<p class="text-red-400 font-medium">Error</p>
 				<p class="mt-2 text-muted">{smoke.error ?? 'An error occurred'}</p>
+				{#if deleteError}
+					<p class="text-red-400 text-sm">{deleteError}</p>
+				{/if}
+				<button
+					type="button"
+					onclick={deleteSmoke}
+					disabled={deleting}
+					class="text-sm text-red-400 hover:text-red-300 disabled:opacity-50"
+				>
+					{deleting ? 'Deleting...' : 'Delete smoke test'}
+				</button>
 			</div>
 		{:else if smoke.state === 'done'}
 			<div class="surface-card p-8 space-y-6">
@@ -215,6 +251,18 @@
 						{:else}
 							Deploy
 						{/if}
+					</button>
+
+					{#if deleteError}
+						<p class="text-red-400 text-sm">{deleteError}</p>
+					{/if}
+					<button
+						type="button"
+						onclick={deleteSmoke}
+						disabled={deleting}
+						class="w-full text-sm text-red-400 hover:text-red-300 disabled:opacity-50 py-2"
+					>
+						{deleting ? 'Deleting...' : 'Delete smoke test'}
 					</button>
 				</form>
 			</div>
