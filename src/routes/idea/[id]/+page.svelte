@@ -152,6 +152,15 @@
 					</div>
 				</section>
 			{/if}
+
+			<div class="pt-4">
+				<a
+					href="/idea/{id}/smoke-test"
+					class="btn btn-md btn-primary"
+				>
+					Build smoke test
+				</a>
+			</div>
 		</article>
 	{/if}
 </div>
