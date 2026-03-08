@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import { page } from '$app/state';
-	import CompetitorAnalysisView from '$lib/components/CompetitorAnalysisView.svelte';
-	import CustomerAnalysisView from '$lib/components/CustomerAnalysisView.svelte';
-	import FinancialAnalysisView from '$lib/components/FinancialAnalysisView.svelte';
-	import LegalAnalysisView from '$lib/components/LegalAnalysisView.svelte';
-	import MarketAnalysisView from '$lib/components/MarketAnalysisView.svelte';
-	import ProblemAnalysisView from '$lib/components/ProblemAnalysisView.svelte';
-	import TechnicalAnalysisView from '$lib/components/TechnicalAnalysisView.svelte';
-	import AnalysisSkeleton from '$lib/components/AnalysisSkeleton.svelte';
+	import CompetitorAnalysisView from '$lib/components/analysis/CompetitorAnalysisView.svelte';
+	import CustomerAnalysisView from '$lib/components/analysis/CustomerAnalysisView.svelte';
+	import FinancialAnalysisView from '$lib/components/analysis/FinancialAnalysisView.svelte';
+	import LegalAnalysisView from '$lib/components/analysis/LegalAnalysisView.svelte';
+	import MarketAnalysisView from '$lib/components/analysis/MarketAnalysisView.svelte';
+	import ProblemAnalysisView from '$lib/components/analysis/ProblemAnalysisView.svelte';
+	import TechnicalAnalysisView from '$lib/components/analysis/TechnicalAnalysisView.svelte';
+	import AnalysisSkeleton from '$lib/components/analysis/AnalysisSkeleton.svelte';
 	import { isCompetitorAnalysis } from '$lib/types/competitor-analysis';
 	import { isCustomerAnalysis } from '$lib/types/customer-analysis';
 	import { isFinancialAnalysis } from '$lib/types/financial-analysis';
