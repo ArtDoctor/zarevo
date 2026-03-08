@@ -26,7 +26,7 @@
 	}: Props = $props();
 </script>
 
-<nav class="bg-neutral-950 px-4 py-2 border-b border-neutral-800">
+<nav class="bg-neutral-950 px-4 py-[10px] border-b border-neutral-800">
 	<div class="max-w-[2000px] mx-auto">
 		{#if authenticated}
 			<!-- Authenticated Layout -->
@@ -53,7 +53,7 @@
 						<Button href="/" variant="link" color="orange" size="md">
 							New idea
 						</Button>
-						<div class="relative" bind:this={profileMenuRef}>
+						<div class="relative h-[28px]" bind:this={profileMenuRef}>
 							<Button variant="icon" color="grey" size="md" title="Profile" onclick={onProfileMenuToggle}>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"

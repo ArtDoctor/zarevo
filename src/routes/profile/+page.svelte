@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { currentUser, pb } from '$lib/pocketbase';
+	import Button from '$lib/components/ui/Button.svelte';
 
 	interface UserRecord {
 		id: string;
@@ -105,13 +106,13 @@
 
 <div class="max-w-2xl mx-auto py-12 px-4">
 	<h1 class="text-2xl">Profile</h1>
-	<p class="mt-1 text-zinc-600 dark:text-zinc-400">Your account settings and preferences.</p>
+	<p class="mt-1 text-neutral-400">Your account settings and preferences.</p>
 
 	{#if user}
-		<div class="mt-8 space-y-6">
-			<div class="flex items-center gap-6 p-6 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/50">
+		<div class="mt-8 space-y-2">
+			<div class="flex items-center gap-6 p-6 rounded-lg bg-neutral-800">
 				<div
-					class="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-semibold text-zinc-600 dark:text-zinc-400 bg-zinc-200 dark:bg-zinc-700 shrink-0 overflow-hidden"
+					class="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-semibold text-neutral-400 bg-neutral-700 shrink-0 overflow-hidden"
 				>
 					{#if avatarUrl}
 						<img src={avatarUrl} alt="" class="w-full h-full object-cover" />
@@ -120,7 +121,7 @@
 					{/if}
 				</div>
 				<div class="flex-1 min-w-0">
-					<div class="text-sm text-zinc-500 dark:text-zinc-400">{user.email}</div>
+					<div class="text-sm text-neutral-400">{user.email}</div>
 					{#if editingName}
 						<form
 							onsubmit={(e) => {
@@ -147,17 +148,17 @@
 								type="button"
 								onclick={cancelEditName}
 								disabled={savingName}
-								class="px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm disabled:opacity-50"
+								class="px-3 py-2 rounded-lg border border-neutral-600 hover:bg-neutral-800 text-sm disabled:opacity-50"
 							>
 								Cancel
 							</button>
 						</form>
 						{#if nameError}
-							<p class="mt-1 text-sm text-red-600 dark:text-red-400">{nameError}</p>
+							<p class="mt-1 text-sm text-red-400">{nameError}</p>
 						{/if}
 					{:else}
 						<div class="flex items-center gap-2 mt-1">
-							<span class="text-lg font-medium text-zinc-800 dark:text-zinc-200">{displayName}</span>
+							<span class="text-lg font-medium text-neutral-200">{displayName}</span>
 							<button
 								type="button"
 								onclick={startEditName}
@@ -170,23 +171,22 @@
 				</div>
 			</div>
 
-			<div class="p-6 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/50">
-				<h2 class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Credits</h2>
-				<p class="mt-1 text-2xl font-semibold text-zinc-800 dark:text-zinc-200">{credits}</p>
+			<div class="p-6 rounded-lg bg-neutral-800">
+				<h2 class="text-sm font-medium text-neutral-400">Credits</h2>
+				<div class="mt-1 flex items-center gap-2">
+					<p class="text-2xl font-semibold text-neutral-200">{credits}</p>
+					<img src="/credit.svg" alt="credit" class="w-6 h-6" />
+				</div>
 			</div>
 
-			<div class="pt-6 border-t border-zinc-200 dark:border-zinc-700">
-				<button
-					type="button"
-					onclick={openDeleteConfirm}
-					class="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-				>
+			<div class="mt-6 pt-3 border-t border-neutral-700">
+				<Button variant="normal" color="red" size="md" onclick={openDeleteConfirm}>
 					Delete account
-				</button>
+				</Button>
 			</div>
 		</div>
 	{:else}
-		<p class="mt-8 text-zinc-600 dark:text-zinc-400">Loading...</p>
+		<p class="mt-8 text-neutral-400">Loading...</p>
 	{/if}
 </div>
 
@@ -197,31 +197,31 @@
 		aria-modal="true"
 		aria-labelledby="delete-dialog-title"
 	>
-		<div class="relative z-10 w-full max-w-md rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow-xl p-6">
-			<h2 id="delete-dialog-title" class="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
+		<div class="relative z-10 w-full max-w-md rounded-lg bg-neutral-900 border border-neutral-700 shadow-xl p-6">
+			<h2 id="delete-dialog-title" class="text-lg font-semibold text-neutral-200">
 				Delete account
 			</h2>
-			<p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+			<p class="mt-2 text-sm text-neutral-400">
 				This will permanently delete your account and all associated data. This action cannot be undone.
 			</p>
-			<p class="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
+			<p class="mt-4 text-sm text-neutral-400">
 				Type <strong>delete</strong> to confirm:
 			</p>
 			<input
 				type="text"
 				bind:value={deleteConfirmText}
 				placeholder="delete"
-				class="mt-2 w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+				class="mt-2 w-full px-4 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-100 focus:outline-none focus:ring-2 focus:ring-red-500"
 			/>
 			{#if deleteError}
-				<p class="mt-2 text-sm text-red-600 dark:text-red-400">{deleteError}</p>
+				<p class="mt-2 text-sm text-red-400">{deleteError}</p>
 			{/if}
 			<div class="mt-6 flex gap-3 justify-end">
 				<button
 					type="button"
 					onclick={closeDeleteConfirm}
 					disabled={deleting}
-					class="px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-50"
+					class="px-4 py-2 rounded-lg border border-neutral-600 hover:bg-neutral-800 disabled:opacity-50"
 				>
 					Cancel
 				</button>

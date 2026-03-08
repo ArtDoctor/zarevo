@@ -9,7 +9,7 @@
 	 */
 
 	type Variant = 'primary' | 'normal' | 'icon' | 'link';
-	type Color = 'orange' | 'white' | 'grey' | 'green';
+	type Color = 'orange' | 'white' | 'grey' | 'green' | 'red';
 	type Size = 'sm' | 'md' | 'lg';
 	type ButtonType = 'button' | 'submit' | 'reset';
 
@@ -50,25 +50,29 @@
 			orange: 'bg-primary font-medium text-white hover:bg-[#FF4E17] active:bg-primary/80',
 			white: 'bg-white text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200',
 			grey: 'bg-neutral-700 text-white hover:bg-neutral-600 active:bg-neutral-500',
-			green: 'bg-[#0CA12D] font-medium text-white hover:bg-[#07AF2C] active:bg-[#0CA12D]/80'
+			green: 'bg-[#0CA12D] font-medium text-white hover:bg-[#07AF2C] active:bg-[#0CA12D]/80',
+			red: 'bg-red-800 font-medium text-red-100 hover:bg-red-700'
 		},
 		normal: {
 			orange: 'bg-neutral-800 font-medium text-primary hover:bg-neutral-700 active:bg-neutral-600',
 			white: 'bg-neutral-800 text-white hover:bg-neutral-700 active:bg-neutral-600',
 			grey: 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700 active:bg-neutral-600',
-			green: 'bg-[#0CA12D] font-medium text-white hover:bg-[#07AF2C] active:bg-[#0CA12D]/80'
+			green: 'bg-[#0CA12D] font-medium text-white hover:bg-[#07AF2C] active:bg-[#0CA12D]/80',
+			red: 'bg-red-800 font-medium text-red-100 hover:bg-red-700'
 		},
 		icon: {
-			orange: 'bg-neutral-800 text-primary hover:bg-primary/10 active:bg-primary/20',
-			white: 'bg-neutral-800 text-white hover:bg-white/10 active:bg-white/20',
-			grey: 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 active:bg-neutral-600',
-			green: 'bg-neutral-800 text-[#0CA12D] hover:bg-[#0CA12D]/10 active:bg-[#0CA12D]/20'
+			orange: 'bg-transparent text-primary hover:bg-primary/10 active:bg-primary/20',
+			white: 'bg-transparent text-white hover:bg-white/10 active:bg-white/20',
+			grey: 'bg-transparent text-neutral-500 hover:text-neutral-300 hover:bg-neutral-900',
+			green: 'bg-transparent text-[#0CA12D] hover:bg-[#0CA12D]/10 active:bg-[#0CA12D]/20',
+			red: 'bg-transparent text-red-400 hover:bg-red-900/20'
 		},
 		link: {
 			orange: 'bg-primary text-white font-medium hover:bg-[#FF4E17] active:bg-primary/80',
 			white: 'bg-neutral-900 text-neutral-400 hover:text-white active:bg-neutral-800 active:text-white',
 			grey: 'bg-neutral-900 text-neutral-400 hover:text-neutral-200 active:bg-neutral-800 active:text-white',
-			green: 'bg-[#0CA12D] text-white font-medium hover:bg-[#07AF2C] active:bg-[#0CA12D]/80'
+			green: 'bg-[#0CA12D] text-white font-medium hover:bg-[#07AF2C] active:bg-[#0CA12D]/80',
+			red: 'bg-red-800 text-red-100 font-medium hover:bg-red-700'
 		}
 	};
 
@@ -85,9 +89,9 @@
 			lg: 'text-base px-6 py-3'
 		},
 		icon: {
-			sm: 'text-sm p-1.5',
-			md: 'text-sm p-2',
-			lg: 'text-base p-3'
+			sm: 'text-sm rounded-md px-3 py-1',
+			md: 'text-sm rounded-md px-3 py-1',
+			lg: 'text-base rounded-md px-3 py-1'
 		},
 		link: {
 			sm: 'text-sm px-6 py-1 rounded-md min-w-[140px] whitespace-nowrap',
