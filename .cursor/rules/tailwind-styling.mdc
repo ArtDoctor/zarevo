@@ -1,0 +1,28 @@
+---
+description: Use Tailwind for styling, avoid custom CSS
+alwaysApply: true
+---
+
+# Use Tailwind, Avoid CSS
+
+Use Tailwind utility classes for styling. Avoid writing custom CSS or SCSS.
+
+## Guidelines
+
+- Use Tailwind classes directly in components (e.g. `class="flex gap-4 p-4 rounded-lg"`)
+- Do not create new `.css` or `.scss` files for component styles
+- Use `@apply` sparingly and only when a pattern repeats; prefer inline Tailwind classes
+- For layout, typography, spacing, colors: use Tailwind utilities
+
+## Examples
+
+```svelte
+<!-- ❌ BAD - custom CSS -->
+<style>
+  .card { padding: 1rem; border-radius: 0.5rem; }
+</style>
+<div class="card">...</div>
+
+<!-- ✅ GOOD - Tailwind -->
+<div class="p-4 rounded-lg">...</div>
+```

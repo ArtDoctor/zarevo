@@ -1,9 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import CompetitorAnalysisView from '$lib/components/CompetitorAnalysisView.svelte';
+	import CustomerAnalysisView from '$lib/components/CustomerAnalysisView.svelte';
+	import FinancialAnalysisView from '$lib/components/FinancialAnalysisView.svelte';
+	import LegalAnalysisView from '$lib/components/LegalAnalysisView.svelte';
 	import MarketAnalysisView from '$lib/components/MarketAnalysisView.svelte';
 	import ProblemAnalysisView from '$lib/components/ProblemAnalysisView.svelte';
+	import TechnicalAnalysisView from '$lib/components/TechnicalAnalysisView.svelte';
+	import { isCompetitorAnalysis } from '$lib/types/competitor-analysis';
+	import { isCustomerAnalysis } from '$lib/types/customer-analysis';
+	import { isFinancialAnalysis } from '$lib/types/financial-analysis';
+	import { isLegalAnalysis } from '$lib/types/legal-analysis';
 	import { isMarketAnalysis } from '$lib/types/market-analysis';
 	import { isProblemAnalysis } from '$lib/types/problem-analysis';
+	import { isTechnicalAnalysis } from '$lib/types/technical-analysis';
 
 	interface Analysis {
 		id: string;
@@ -39,6 +49,31 @@
 			? analysis.result
 			: null
 	);
+	const customerData = $derived(
+		analysisType === 'customer' && analysis?.result != null && isCustomerAnalysis(analysis.result)
+			? analysis.result
+			: null
+	);
+	const competitorData = $derived(
+		analysisType === 'competitor' && analysis?.result != null && isCompetitorAnalysis(analysis.result)
+			? analysis.result
+			: null
+	);
+	const technicalData = $derived(
+		analysisType === 'technical' && analysis?.result != null && isTechnicalAnalysis(analysis.result)
+			? analysis.result
+			: null
+	);
+	const legalData = $derived(
+		analysisType === 'legal' && analysis?.result != null && isLegalAnalysis(analysis.result)
+			? analysis.result
+			: null
+	);
+	const financialData = $derived(
+		analysisType === 'financial' && analysis?.result != null && isFinancialAnalysis(analysis.result)
+			? analysis.result
+			: null
+	);
 </script>
 
 <div class="min-h-full py-8 px-[3.6rem] lg:px-[4.8rem]">
@@ -55,6 +90,16 @@
 					<MarketAnalysisView data={marketData} />
 				{:else if problemData}
 					<ProblemAnalysisView data={problemData} />
+				{:else if customerData}
+					<CustomerAnalysisView data={customerData} />
+				{:else if competitorData}
+					<CompetitorAnalysisView data={competitorData} />
+				{:else if technicalData}
+					<TechnicalAnalysisView data={technicalData} />
+				{:else if legalData}
+					<LegalAnalysisView data={legalData} />
+				{:else if financialData}
+					<FinancialAnalysisView data={financialData} />
 				{:else}
 					<pre class="p-4 rounded-xl text-sm text-neutral-300 overflow-x-auto font-mono" style="background-color: #1C1C1C">{JSON.stringify(analysis.result, null, 2)}</pre>
 				{/if}

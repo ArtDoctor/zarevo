@@ -3,6 +3,8 @@
 	import { invalidateAll } from '$app/navigation';
 	import { pb } from '$lib/pocketbase';
 	import ProceedIdeaModal from '$lib/components/ProceedIdeaModal.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
+	import Field from '$lib/components/ui/Field.svelte';
 	import { generateIdeaPdf } from '$lib/pdf-report';
 
 	interface Analysis {
@@ -226,22 +228,39 @@
 				{/if}
 
 				<div class="space-y-2">
-					<button type="button" class="w-full py-2.5 rounded-sm font-medium text-sm text-white transition-colors hover:brightness-110 cursor-pointer" style="background-color: #0CA12D" onclick={() => (showProceedModal = true)}>
-						Proceed with this idea
-					</button>
-					<button
+					<Button
 						type="button"
-						class="w-full py-2 rounded-sm font-medium text-sm bg-neutral-800 hover:bg-neutral-700 text-white transition-colors cursor-pointer"
+						variant="primary"
+						color="orange"
+						size="lg"
+						class="w-full !bg-[#0CA12D] hover:!brightness-110"
+						onclick={() => (showProceedModal = true)}
+					>
+						Proceed with this idea
+					</Button>
+					<Button
+						type="button"
+						variant="normal"
+						color="grey"
+						size="md"
+						class="w-full"
 						onclick={() => idea && generateIdeaPdf(idea)}
 					>
 						Download as PDF
-					</button>
-					<button type="button" class="w-full py-2 rounded-sm font-medium text-sm bg-neutral-800 hover:bg-neutral-700 text-white transition-colors cursor-pointer" onclick={() => (showPromptModal = true)}>
+					</Button>
+					<Button
+						type="button"
+						variant="normal"
+						color="grey"
+						size="md"
+						class="w-full"
+						onclick={() => (showPromptModal = true)}
+					>
 						Show prompt
-					</button>
-					<button type="button" disabled class="w-full py-2 rounded-sm font-medium text-sm bg-neutral-800 text-neutral-500 cursor-not-allowed">
+					</Button>
+					<Button type="button" variant="normal" color="grey" size="md" class="w-full" disabled>
 						Add to bundle
-					</button>
+					</Button>
 				</div>
 			</div>
 		</aside>
@@ -256,23 +275,25 @@
 						}}
 						class="flex flex-wrap items-center gap-2"
 					>
-						<input
-							type="text"
+						<Field
+							type="input"
 							bind:value={editTitleValue}
 							placeholder="Idea title"
-							class="flex-1 min-w-[200px] px-3 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-white text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+							class="flex-1 min-w-[200px] text-2xl font-semibold"
 						/>
-						<button type="submit" disabled={savingTitle} class="btn btn-sm btn-primary">
+						<Button type="submit" variant="primary" size="sm" disabled={savingTitle}>
 							{savingTitle ? 'Saving...' : 'Save'}
-						</button>
-						<button
+						</Button>
+						<Button
 							type="button"
+							variant="normal"
+							color="grey"
+							size="sm"
 							onclick={cancelEditTitle}
 							disabled={savingTitle}
-							class="px-3 py-2 rounded-sm bg-neutral-800 hover:bg-neutral-700 text-white text-sm disabled:opacity-50"
 						>
 							Cancel
-						</button>
+						</Button>
 					</form>
 					{#if titleError}
 						<p class="mt-1 text-sm text-red-400">{titleError}</p>
@@ -280,10 +301,12 @@
 				{:else}
 					<div class="flex items-center gap-2 flex-wrap">
 						<h1 class="text-3xl font-normal text-white">{idea.title || 'Untitled'}</h1>
-						<button
+						<Button
 							type="button"
+							variant="icon"
+							color="grey"
+							size="sm"
 							onclick={startEditTitle}
-							class="p-1.5 rounded text-primary hover:bg-neutral-800 transition-colors"
 							title="Edit title"
 							aria-label="Edit title"
 						>
@@ -291,7 +314,7 @@
 								<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
 								<path d="m15 5 4 4" />
 							</svg>
-						</button>
+						</Button>
 					</div>
 					{#if idea.description}
 						<p class="mt-2 text-neutral-400 text-[0.8125rem] whitespace-pre-wrap max-w-[50%]">{idea.description}</p>
