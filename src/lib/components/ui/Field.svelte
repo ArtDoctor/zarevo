@@ -68,24 +68,14 @@
 		width: 100%;
 		padding: 0.75rem 1rem;
 		border-radius: 12px;
-		background-color: rgba(10, 10, 10, 0.5);
+		background-color: rgba(10, 10, 10, 0.7);
 		backdrop-filter: blur(30px);
 		-webkit-backdrop-filter: blur(30px);
 		border: 1px solid rgba(64, 64, 64, 0.3);
 		color: white;
 		font-size: 1rem;
 		transition: all 0.3s ease;
-		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-		background-image: linear-gradient(
-			135deg,
-			rgba(30, 30, 30, 0.4) 0%,
-			rgba(20, 20, 20, 0.4) 25%,
-			rgba(15, 15, 15, 0.4) 50%,
-			rgba(20, 20, 20, 0.4) 75%,
-			rgba(30, 30, 30, 0.4) 100%
-		);
-		background-size: 200% 200%;
-		animation: gradient-shift 8s ease infinite;
+		box-shadow: 0 4px 25px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
 	}
 
 	.field-base::placeholder {
@@ -97,14 +87,8 @@
 	}
 
 	.field-focused {
-		animation: none;
 		border-color: var(--color-primary, #ff6b35);
 		box-shadow: 0 0 0 1px var(--color-primary, #ff6b35);
-		background-image: linear-gradient(
-			135deg,
-			rgba(10, 10, 10, 0.5) 0%,
-			rgba(10, 10, 10, 0.5) 100%
-		);
 	}
 
 	.field-base:disabled {
@@ -113,24 +97,12 @@
 	}
 
 	.field-textarea {
-		resize: vertical;
+		resize: none;
 		min-height: 8rem;
 		max-height: 20rem;
 	}
 
 	.field-input {
 		height: 3rem;
-	}
-
-	@keyframes gradient-shift {
-		0% {
-			background-position: 0% 50%;
-		}
-		50% {
-			background-position: 100% 50%;
-		}
-		100% {
-			background-position: 0% 50%;
-		}
 	}
 </style>
