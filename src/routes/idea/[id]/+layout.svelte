@@ -103,6 +103,15 @@
 		return typeof score === 'number' ? String(score) : score;
 	}
 
+	type ScoreStatus = { label: 'Valid'; variant: 'valid' } | { label: 'Problematic'; variant: 'problematic' } | { label: 'Risky'; variant: 'risky' } | null;
+	function getScoreStatus(score: string | number | null): ScoreStatus {
+		const n = typeof score === 'number' ? score : typeof score === 'string' ? parseFloat(score) : NaN;
+		if (Number.isNaN(n)) return null;
+		if (n > 80) return { label: 'Valid', variant: 'valid' };
+		if (n >= 60) return { label: 'Problematic', variant: 'problematic' };
+		return { label: 'Risky', variant: 'risky' };
+	}
+
 	const navItems = $derived.by(() => {
 		const byType = new Map<string, Analysis>();
 		for (const a of analyses) {
@@ -189,18 +198,24 @@
 	const currentAnalysis = $derived(
 		analyses.find((a: Analysis) => a.id === currentAnalysisId) ?? null
 	);
-	const headerScore = $derived(getScore(currentAnalysis));
+	const headerScore = $derived(currentAnalysis ? getScore(currentAnalysis) : null);
+
+	const isSmokeTestPage = $derived(page.url.pathname.endsWith('/smoke-test'));
 </script>
 
-{#if idea}
-	<div class="flex min-h-[calc(100vh-56px)] bg-neutral-800">
-		<aside class="w-80 shrink-0 bg-neutral-900 flex flex-col h-[calc(100vh-56px)] pr-5">
-			<nav class="flex-1 p-3 space-y-0.5 overflow-y-auto min-h-0">
+{#if idea && isSmokeTestPage}
+	<div class="min-h-[calc(100vh-65px)] bg-neutral-800">
+		{@render children()}
+	</div>
+{:else if idea}
+	<div class="flex h-[calc(100vh-65px)] overflow-hidden bg-neutral-800">
+		<aside class="w-80 shrink-0 bg-neutral-900 flex flex-col h-full pr-5 overflow-hidden">
+			<nav class="flex-1 p-3 space-y-0.5 min-h-0 overflow-hidden">
 				{#each navItems as item}
 					{#if item.analysis}
 						<a
 							href="/idea/{id}?analysis={item.analysis.id}"
-							class="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors {page.url.searchParams.get('analysis') === item.analysis.id
+							class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {page.url.searchParams.get('analysis') === item.analysis.id
 								? 'bg-neutral-800 text-white'
 								: 'text-neutral-400 hover:bg-neutral-900 hover:text-white'}"
 						>
@@ -264,8 +279,8 @@
 				</div>
 			</div>
 		</aside>
-		<div class="flex-1 min-w-0 flex flex-col">
-			<header class="shrink-0 bg-neutral-900 px-6 py-6 flex items-start justify-between gap-4">
+		<div class="flex-1 min-w-0 flex flex-col bg-neutral-900">
+			<header class="shrink-0 bg-neutral-900 px-6 py-6 flex items-center justify-between gap-4">
 				<div class="min-w-0 flex-1">
 				{#if editingTitle}
 					<form
@@ -322,13 +337,35 @@
 				{/if}
 				</div>
 				{#if headerScore != null}
-					<div class="shrink-0 text-right">
-						<span class="text-2xl font-semibold text-white">{typeof headerScore === 'number' ? headerScore.toFixed(headerScore % 1 === 0 ? 0 : 2) : headerScore}</span>
-						<span class="text-sm text-neutral-500 align-super -ml-0.5">/100</span>
+					{@const headerStatus = getScoreStatus(headerScore)}
+					<div class="shrink-0 flex items-center gap-4 justify-end">
+						{#if headerStatus}
+							<span
+								class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border {headerStatus.variant ===
+								'valid'
+									? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+									: headerStatus.variant === 'problematic'
+										? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
+										: 'bg-red-500/20 text-red-400 border-red-500/40'}"
+							>
+								{#if headerStatus.variant === 'valid'}
+									<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+								{:else if headerStatus.variant === 'problematic'}
+									<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg>
+								{:else}
+									<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+								{/if}
+								{headerStatus.label}
+							</span>
+						{/if}
+						<div class="text-right">
+							<span class="text-2xl font-semibold text-white">{typeof headerScore === 'number' ? headerScore.toFixed(headerScore % 1 === 0 ? 0 : 2) : headerScore}</span>
+							<span class="text-sm text-neutral-500 align-super -ml-0.5">/100</span>
+						</div>
 					</div>
 				{/if}
 			</header>
-			<main class="flex-1 min-h-0 overflow-auto bg-neutral-800">
+			<main class="flex-1 min-h-0 overflow-auto bg-neutral-800 rounded-tl-xl rounded-tr-xl mt-2 ml-2 mr-2">
 				{@render children()}
 			</main>
 		</div>
