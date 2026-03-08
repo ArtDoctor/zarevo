@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AdvancedValidation from '$lib/components/AdvancedValidation.svelte';
+	import Footer from '$lib/components/layout/Footer.svelte';
 </script>
 
 <svelte:head>
@@ -17,3 +18,5 @@
 		<spline-viewer url="https://prod.spline.design/FVYpaJUhLfAnywyj/scene.splinecode" class="w-full h-full"></spline-viewer>
 	</div>
 </section>
+
+<Footer />
