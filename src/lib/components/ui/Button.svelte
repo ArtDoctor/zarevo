@@ -59,10 +59,10 @@
 			green: 'bg-[#0CA12D] font-medium text-white hover:bg-[#07AF2C] active:bg-[#0CA12D]/80'
 		},
 		icon: {
-			orange: 'bg-transparent text-primary hover:bg-primary/10 active:bg-primary/20',
-			white: 'bg-transparent text-white hover:bg-white/10 active:bg-white/20',
-			grey: 'bg-transparent text-neutral-400 hover:bg-neutral-800 active:bg-neutral-700',
-			green: 'bg-transparent text-[#0CA12D] hover:bg-[#0CA12D]/10 active:bg-[#0CA12D]/20'
+			orange: 'bg-neutral-800 text-primary hover:bg-primary/10 active:bg-primary/20',
+			white: 'bg-neutral-800 text-white hover:bg-white/10 active:bg-white/20',
+			grey: 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 active:bg-neutral-600',
+			green: 'bg-neutral-800 text-[#0CA12D] hover:bg-[#0CA12D]/10 active:bg-[#0CA12D]/20'
 		},
 		link: {
 			orange: 'bg-primary text-white font-medium hover:bg-[#FF4E17] active:bg-primary/80',

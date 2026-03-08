@@ -8,6 +8,7 @@
 	import { createIdeaAndNavigate, createIdeaAdvancedAndNavigate } from '$lib/api/ideas';
 	import Field from '$lib/components/ui/Field.svelte';
 	import ButtonGroup from '$lib/components/ui/ButtonGroup.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
 
 	interface Props {
 		backHref: string;
@@ -107,13 +108,20 @@
 </script>
 
 <div class="max-w-2xl mx-auto py-12 px-4">
-	<a
+<div class="flex items-center gap-3 mb-8">
+	<Button
+		variant="icon"
+		color="white"
+		size="sm"
 		href={backHref}
-		class="inline-flex items-center gap-2 text-sm text-muted hover:text-primary mb-6"
+		title={backLabel}
 	>
-		← {backLabel}
-	</a>
-	<h1 class="text-2xl mb-8">Advanced Validation</h1>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+			<path d="m15 18-6-6 6-6"/>
+		</svg>
+	</Button>
+	<h1 class="text-2xl">Ideas in. Unicorn ideas out.</h1>
+</div>
 
 	{#if error}
 		<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
