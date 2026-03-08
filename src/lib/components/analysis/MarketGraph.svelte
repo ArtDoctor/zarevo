@@ -40,16 +40,16 @@
 	}
 </script>
 
-<div class="market-graph">
-	<div class="market-graph-header">
-		<span class="market-graph-name">{market.name}</span>
+<div class="flex flex-col gap-2">
+	<div class="flex items-center gap-2">
+		<span class="text-sm font-semibold text-white">{market.name}</span>
 		{#if market.growth_rate}
-			<span class="market-graph-growth">{market.growth_rate}</span>
+			<span class="text-xs font-normal text-neutral-400">{market.growth_rate}</span>
 		{/if}
 	</div>
 	<svg
 		viewBox="0 0 {width} {height}"
-		class="market-graph-svg"
+		class="w-full max-w-[340px] h-auto min-h-[140px]"
 		preserveAspectRatio="xMidYMid meet"
 	>
 		{#each tickValues as val}
@@ -68,7 +68,7 @@
 				y={yPos}
 				text-anchor="end"
 				dominant-baseline="middle"
-				class="market-graph-axis-label"
+				class="text-[10px] font-medium fill-white"
 			>
 				{formatSize(val)}
 			</text>
@@ -79,7 +79,7 @@
 				x={x(i)}
 				y={height - 6}
 				text-anchor="middle"
-				class="market-graph-axis-label"
+				class="text-[10px] font-medium fill-white"
 			>
 				{year}
 			</text>
@@ -100,45 +100,3 @@
 		{/if}
 	</svg>
 </div>
-
-<style>
-	.market-graph {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.market-graph-header {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-
-	.market-graph-name {
-		font-family: var(--font-sans);
-		font-size: 0.875rem;
-		font-weight: 600;
-		color: #fff;
-	}
-
-	.market-graph-growth {
-		font-family: var(--font-sans);
-		font-size: 0.75rem;
-		font-weight: 400;
-		color: #a3a3a3;
-	}
-
-	.market-graph-svg {
-		width: 100%;
-		max-width: 340px;
-		height: auto;
-		min-height: 140px;
-	}
-
-	.market-graph-axis-label {
-		font-family: var(--font-sans);
-		font-size: 10px;
-		fill: #fff;
-		font-weight: 500;
-	}
-</style>

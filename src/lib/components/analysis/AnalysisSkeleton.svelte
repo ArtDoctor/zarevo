@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Skeleton from './ui/Skeleton.svelte';
+	import Skeleton from '$lib/components/ui/Skeleton.svelte';
 </script>
 
 <div class="flex flex-col gap-6">
