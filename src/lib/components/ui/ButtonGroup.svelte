@@ -51,7 +51,7 @@
 			type="button"
 			variant="primary"
 			color="orange"
-			cost={5}
+			cost={4}
 			size="lg"
 			onclick={onPro}
 			disabled={disabled || !canPro}
