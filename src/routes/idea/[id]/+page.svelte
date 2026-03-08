@@ -32,7 +32,6 @@
 	let idea = $state<Idea | null>(null);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
-	let existingSmokeId = $state<string | null>(null);
 	let editingTitle = $state(false);
 	let editTitleValue = $state('');
 	let savingTitle = $state(false);
@@ -65,13 +64,6 @@
 		try {
 			const record = await pb.collection('ideas').getOne<Idea>(id, { expand: 'analyses' });
 			idea = record;
-
-			try {
-				const smoke = await pb.collection('smokes').getFirstListItem<{ id: string }>(`idea = "${id}"`);
-				existingSmokeId = smoke.id;
-			} catch {
-				existingSmokeId = null;
-			}
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Failed to load idea';
 		} finally {
@@ -254,14 +246,6 @@
 			{/if}
 
 			<div class="pt-4 flex flex-wrap gap-3">
-				{#if existingSmokeId}
-					<a
-						href="/smokes/{existingSmokeId}"
-						class="btn btn-md btn-secondary"
-					>
-						View smoke test
-					</a>
-				{/if}
 				{#if canBuildSmokeTest}
 					<a
 						href="/idea/{id}/smoke-test"

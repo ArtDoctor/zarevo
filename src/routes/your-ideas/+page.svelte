@@ -15,13 +15,11 @@
 	interface SmokeRecord {
 		id: string;
 		state: SmokeState;
-		idea: string;
 		visits?: number;
 		start_date?: string;
 		duration?: number;
 		domain?: string;
 		subdomain?: string;
-		expand?: { idea?: Idea };
 	}
 
 	let ideas = $state<Idea[]>([]);
@@ -35,7 +33,6 @@
 	const allSelected = $derived(ideas.length > 0 && selectedIds.size === ideas.length);
 	const hasSelection = $derived(selectedIds.size > 0);
 
-	const ideaById = $derived(new Map(ideas.map((i) => [i.id, i])));
 
 	$effect(() => {
 		if (selectAllEl) {
@@ -128,13 +125,12 @@
 			const ideaRecords = await pb.collection('ideas').getFullList<Idea>();
 			ideas = ideaRecords;
 
-			if (ideaRecords.length > 0) {
-				const ideaIdFilter = ideaRecords.map((i) => `idea = "${i.id}"`).join(' || ');
+			const userId = pb.authStore.model?.id;
+			if (userId) {
 				const smokeRecords = await pb.collection('smokes').getFullList<SmokeRecord>({
-					expand: 'idea',
-					filter: ideaIdFilter
+					filter: `author = "${userId}"`
 				});
-				smokes = smokeRecords.filter((s) => s.idea);
+				smokes = smokeRecords;
 			} else {
 				smokes = [];
 			}
@@ -230,7 +226,6 @@
 				{:else}
 					<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 						{#each smokes as smoke}
-							{@const idea = smoke.expand?.idea ?? ideaById.get(smoke.idea)}
 							<button
 								type="button"
 								onclick={() => goto(smoke.domain || smoke.subdomain ? `/smokes/stats/${smoke.id}` : `/smokes/${smoke.id}`)}
@@ -246,9 +241,6 @@
 										</span>
 									{/if}
 								</div>
-								{#if idea}
-									<p class="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-1">{idea.title || 'Untitled idea'}</p>
-								{/if}
 								<div class="flex items-center gap-3 text-sm text-muted">
 									<span>{smoke.visits ?? 0} visits</span>
 								</div>
