@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { get } from 'svelte/store';
 	import { pb } from '$lib/pocketbase';
+	import { signupCredits } from '$lib/stores/auth-modal';
 	import { validateEmail, validateOTPCode, validatePassword } from '$lib/form-validations/login-validation';
 	import { goto } from '$app/navigation';
 	import { validationFormStore, clearValidationForm } from '$lib/stores/validation-form';
@@ -35,6 +36,7 @@
 	});
 
 	function closeModal() {
+		signupCredits.set(3);
 		onclose?.();
 	}
 
@@ -99,12 +101,13 @@
 		error = '';
 		try {
 			if (currentMode === 'signup') {
+				const credits = get(signupCredits);
 				await pb.collection('users').create({
 					email,
 					password,
 					passwordConfirm: passwordConfirm,
 					emailVisibility: false,
-					credits: 3
+					credits
 				});
 			}
 			const result = await pb.collection('users').requestOTP(email);
@@ -151,9 +154,10 @@
 		loading = true;
 
 		try {
+			const credits = get(signupCredits);
 			await pb.collection('users').authWithOAuth2({
 				provider: providerName,
-				createData: { credits: 3 }
+				createData: { credits }
 			});
 			onAuthSuccess();
 		} catch (e: unknown) {
