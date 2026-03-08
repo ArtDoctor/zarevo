@@ -87,7 +87,6 @@
 	$effect(() => {
 		ideaStore.set(idea);
 	});
-	const runningSmoke = $derived(data.runningSmoke);
 	const analyses = $derived(idea?.expand?.analyses ?? []);
 	const canBuildSmokeTest = $derived(
 		idea != null &&
@@ -201,6 +200,7 @@
 			.filter((x: { smoke: SmokeRecord; progress: number; daysLeft: number } | null): x is { smoke: SmokeRecord; progress: number; daysLeft: number } => x != null);
 	});
 
+	let showSidebar = $state(false);
 	let showPromptModal = $state(false);
 	let showProceedModal = $state(false);
 	let editingTitle = $state(false);
@@ -252,9 +252,32 @@
 		{@render children()}
 	</div>
 {:else if id}
-	<div class="flex h-[calc(100vh-65px)] overflow-hidden bg-neutral-800">
-		<aside class="w-80 shrink-0 bg-neutral-900 flex flex-col h-full pr-5 overflow-hidden">
+	<div class="flex h-[calc(100vh-65px)] overflow-hidden bg-neutral-800 relative">
+		{#if showSidebar}
+			<button
+				type="button"
+				class="fixed inset-0 z-40 bg-black/50 md:hidden"
+				aria-label="Close menu"
+				onclick={() => (showSidebar = false)}
+			></button>
+		{/if}
+		<aside
+			class="fixed md:relative inset-y-0 left-0 z-50 w-80 shrink-0 bg-neutral-900 flex flex-col h-full pr-5 overflow-hidden transition-transform duration-200 ease-out md:translate-x-0 {showSidebar
+				? 'translate-x-0'
+				: '-translate-x-full md:translate-x-0'}"
+		>
 			<nav class="flex-1 p-3 space-y-0.5 min-h-0 overflow-hidden">
+				<div class="flex items-center justify-between mb-2 md:hidden">
+					<span class="text-sm font-medium text-white">Analyses</span>
+					<button
+						type="button"
+						class="p-2 -mr-2 rounded-lg text-neutral-400 hover:bg-neutral-800 hover:text-white"
+						aria-label="Close menu"
+						onclick={() => (showSidebar = false)}
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+					</button>
+				</div>
 				{#each navItems as item}
 					{#if item.analysis}
 						<a
@@ -262,6 +285,7 @@
 							class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {page.url.searchParams.get('analysis') === item.analysis.id
 								? 'bg-neutral-800 text-white'
 								: 'text-neutral-400 hover:bg-neutral-900 hover:text-white'}"
+							onclick={() => (showSidebar = false)}
 						>
 							<span>{item.label}</span>
 							{#if getScoreLabel(item.analysis)}
@@ -332,8 +356,22 @@
 			</div>
 		</aside>
 		<div class="flex-1 min-w-0 flex flex-col bg-neutral-900">
-			<header class="shrink-0 bg-neutral-900 px-6 py-6 flex items-center justify-between gap-4">
-				<div class="min-w-0 flex-1">
+			<header class="shrink-0 bg-neutral-900 px-4 md:px-6 py-4 md:py-6 flex flex-wrap items-center justify-between gap-4">
+				<div class="flex items-center gap-2 min-w-0 flex-1">
+					<button
+						type="button"
+						class="md:hidden p-2 -ml-2 rounded-lg text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors"
+						aria-label="Open menu"
+						aria-expanded={showSidebar}
+						onclick={() => (showSidebar = true)}
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<line x1="4" x2="20" y1="12" y2="12" />
+							<line x1="4" x2="20" y1="6" y2="6" />
+							<line x1="4" x2="20" y1="18" y2="18" />
+						</svg>
+					</button>
+					<div class="min-w-0 flex-1">
 				{#if editingTitle}
 					<form
 						onsubmit={(e) => {
@@ -368,7 +406,7 @@
 				{:else}
 					<div class="flex items-center gap-2 flex-wrap">
 						{#if idea?.title}
-							<h1 class="text-3xl font-normal text-white">{idea.title}</h1>
+							<h1 class="text-xl md:text-3xl font-normal text-white break-words">{idea.title}</h1>
 						{:else}
 							<Skeleton class="h-9 w-64" />
 						{/if}
@@ -390,9 +428,10 @@
 						{/if}
 					</div>
 					{#if idea?.description}
-						<p class="mt-2 text-neutral-400 text-[0.8125rem] whitespace-pre-wrap max-w-[50%]">{idea.description}</p>
+						<p class="mt-2 text-neutral-400 text-[0.8125rem] whitespace-pre-wrap max-w-full md:max-w-[50%]">{idea.description}</p>
 					{/if}
 				{/if}
+					</div>
 				</div>
 				{#if currentAnalysis}
 					{@const isFinancial = (currentAnalysis.type ?? '').toLowerCase().replace(/\s+/g, '_') === 'financial'}
@@ -434,7 +473,7 @@
 					{/if}
 				{/if}
 			</header>
-			<main class="flex-1 min-h-0 overflow-auto bg-neutral-800 rounded-tl-xl rounded-tr-xl mt-2 ml-2 mr-2">
+			<main class="flex-1 min-h-0 overflow-auto bg-neutral-800 md:rounded-tl-xl md:rounded-tr-xl md:mt-2 md:ml-2 md:mr-2">
 				{@render children()}
 			</main>
 		</div>

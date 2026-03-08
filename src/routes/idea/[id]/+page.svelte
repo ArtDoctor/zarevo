@@ -79,7 +79,7 @@
 	);
 </script>
 
-<div class="min-h-full py-8 px-[3.6rem] lg:px-[4.8rem]">
+<div class="min-h-full py-4 px-4 md:py-8 md:px-[3.6rem] lg:px-[4.8rem]">
 	{#if !idea}
 		<p class="text-neutral-400">Loading...</p>
 	{:else if !analysisId}
