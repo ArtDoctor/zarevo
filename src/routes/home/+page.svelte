@@ -86,24 +86,35 @@
 	}
 </script>
 
-<!-- Hero Section -->
-<section class="min-h-[80vh] w-screen bg-linear-to-b from-neutral-900 to-neutral-950 flex flex-col items-center justify-center px-4 -mx-3 relative left-1/2 right-1/2 -translate-x-1/2">
-	<div class="w-full max-w-2xl">
-		<h1 class="text-3xl md:text-4xl text-zinc-800 dark:text-zinc-200 mb-8">
-			Imagine a startup. <br /><span class="text-primary">Now validate it.</span>
-		</h1>
+<svelte:head>
+	<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.67/build/spline-viewer.js"></script>
+</svelte:head>
 
-		{#if error}
-			<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
-		{/if}
-		<IdeaInput
-			onSubmit={handleSubmit}
-			onSubmitPro={handleSubmitPro}
-			advancedPath="/home/advanced"
-			credits={credits}
-			isAuthenticated={pb.authStore.isValid}
-			disabled={submitting}
-		/>
+<!-- Hero Section -->
+<section class="min-h-[80vh] w-screen bg-linear-to-b from-neutral-900 to-neutral-950 -mx-3 relative left-1/2 right-1/2 -translate-x-1/2 overflow-hidden">
+	<div class="flex flex-col items-center justify-center px-4 relative z-10 min-h-[80vh]">
+		<div class="w-full max-w-2xl">
+			<h1 class="text-3xl md:text-4xl text-zinc-800 dark:text-zinc-200 mb-8">
+				Imagine a startup. <br /><span class="text-primary">Now validate it.</span>
+			</h1>
+
+			{#if error}
+				<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
+			{/if}
+			<IdeaInput
+				onSubmit={handleSubmit}
+				onSubmitPro={handleSubmitPro}
+				advancedPath="/home/advanced"
+				credits={credits}
+				isAuthenticated={pb.authStore.isValid}
+				disabled={submitting}
+			/>
+		</div>
+	</div>
+	
+	<!-- Spline Animation -->
+	<div class="absolute bottom-0 left-0 w-full h-[400px] z-0">
+		<spline-viewer url="https://prod.spline.design/FVYpaJUhLfAnywyj/scene.splinecode" class="w-full h-full"></spline-viewer>
 	</div>
 </section>
 
