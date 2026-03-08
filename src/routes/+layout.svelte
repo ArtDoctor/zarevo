@@ -5,7 +5,7 @@
 	import { currentUser, pb } from '$lib/pocketbase';
 	import { showAuthModal, authModalMode, requestSignIn, requestSignUp } from '$lib/stores/auth-modal';
 	import { goto } from '$app/navigation';
-	import { browser } from '$app/environment';
+	import { browser, dev } from '$app/environment';
 
 	interface UserRecord {
 		credits?: number;
@@ -42,7 +42,12 @@
 	}
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+	<link rel="icon" href={favicon} />
+	{#if !dev}
+		<script defer src="https://umami-s044kkk.yza.yazero.io/script.js" data-website-id="c7127cf8-b1f2-4373-b6f8-e869b652c7e8"></script>
+	{/if}
+</svelte:head>
 
 <header class="sticky top-0 z-40 border-b surface-blur">
 	<nav class="max-w-6xl mx-auto px-4 py-3 flex items-center">
