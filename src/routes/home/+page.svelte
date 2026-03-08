@@ -284,7 +284,7 @@
 			</div>
 			
 			<div class="mt-6 pt-4 flex justify-between items-center">
-				<p class="text-sm text-white flex items-center gap-1">Cost: 5<img src="/credit.svg" alt="credit" class="w-4 h-4 inline" /></p>
+				<p class="text-sm text-white flex items-center gap-1">Cost: 4<img src="/credit.svg" alt="credit" class="w-4 h-4 inline" /></p>
 				<p class="text-xs text-neutral-500">Powered by Zarevo research engine</p>
 			</div>
 		</div>
