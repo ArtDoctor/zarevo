@@ -9,7 +9,7 @@
 </script>
 
 <div
-	class="skeleton rounded-lg {className}"
+	class="skeleton {className}"
 	style:width={width}
 	style:height={height}
 	aria-hidden="true"
@@ -17,16 +17,17 @@
 
 <style>
 	.skeleton {
+		border-radius: 8px;
 		background: linear-gradient(
 			90deg,
 			#1c1c1c 0%,
-			#282828 25%,
+			#222222 25%,
 			#1c1c1c 50%,
-			#282828 75%,
+			#222222 75%,
 			#1c1c1c 100%
 		);
 		background-size: 200% 100%;
-		animation: skeleton-flow 1.5s ease-in-out infinite;
+		animation: skeleton-flow 2.5s ease-in-out infinite;
 	}
 
 	@keyframes skeleton-flow {

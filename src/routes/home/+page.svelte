@@ -199,12 +199,12 @@
 					
 					<div>
 						<h3 class="text-white mb-1">Customer analysis</h3>
-						<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake.</p>
+						<p class="text-sm text-neutral-400">Identify your target customers and their pain points.</p>
 					</div>
 					
 					<div>
 						<h3 class="text-white mb-1">Overall score</h3>
-						<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake.</p>
+						<p class="text-sm text-neutral-400">Get a comprehensive viability score for your startup idea.</p>
 					</div>
 				</div>
 			</div>
@@ -222,32 +222,32 @@
 				<div class="grid grid-cols-2 gap-4 mb-6">
 					<div>
 						<h3 class="text-white mb-1">All in Basic validation</h3>
-						<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake.</p>
+						<p class="text-sm text-neutral-400">Everything from basic validation plus deeper insights.</p>
 					</div>
 					
 					<div>
 						<h3 class="text-white mb-1">Technical analysis</h3>
-						<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake.</p>
+						<p class="text-sm text-neutral-400">Evaluate technical feasibility and implementation challenges.</p>
 					</div>
 					
 					<div>
 						<h3 class="text-white mb-1">Legal analysis</h3>
-						<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake.</p>
+						<p class="text-sm text-neutral-400">Identify regulatory requirements and legal considerations.</p>
 					</div>
 					
 					<div>
 						<h3 class="text-white mb-1">Financial analysis</h3>
-						<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake.</p>
+						<p class="text-sm text-neutral-400">Assess revenue potential, costs, and funding requirements.</p>
 					</div>
 					
 					<div>
 						<h3 class="text-white mb-1">SWOT analysis</h3>
-						<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake.</p>
+						<p class="text-sm text-neutral-400">Examine strengths, weaknesses, opportunities, and threats.</p>
 					</div>
 					
 					<div>
 						<h3 class="text-white mb-1">Overall score</h3>
-						<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake.</p>
+						<p class="text-sm text-neutral-400">Advanced scoring with detailed breakdown and recommendations.</p>
 					</div>
 				</div>
 				
@@ -257,25 +257,25 @@
 					<div class="grid grid-cols-2 gap-4">
 						<div class="bg-neutral-800 rounded-md p-4">
 							<h4 class="text-white mb-1">Smoke test</h4>
-							<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake. Lollipop soufflé I love cake pudding liquorice powder.</p>
+							<p class="text-sm text-neutral-400">Validate demand with a landing page before building. Test your value proposition with real users and collect early sign-ups.</p>
 							<a href="#" class="text-sm text-white inline-block mt-2">Learn more →</a>
 						</div>
 						
 						<div class="bg-neutral-800 rounded-md p-4">
 							<h4 class="text-white mb-1">Brainstorm</h4>
-							<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake. Lollipop soufflé I love cake pudding liquorice powder.</p>
+							<p class="text-sm text-neutral-400">Generate variations and pivots of your idea. Explore alternative approaches, business models, and market angles.</p>
 							<a href="#" class="text-sm text-white inline-block mt-2">Learn more →</a>
 						</div>
 						
 						<div class="bg-neutral-800 rounded-md p-4">
 							<h4 class="text-white mb-1">MVP build</h4>
-							<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake. Lollipop soufflé I love cake pudding liquorice powder.</p>
+							<p class="text-sm text-neutral-400">Get a detailed roadmap for building your minimum viable product. Prioritized features, tech stack recommendations, and timeline.</p>
 							<a href="#" class="text-sm text-white inline-block mt-2">Learn more →</a>
 						</div>
 						
 						<div class="bg-neutral-800 rounded-md p-4">
 							<h4 class="text-white mb-1">VC search</h4>
-							<p class="text-sm text-neutral-400">Pie chocolate cake bear claw croissant cupcake cupcake. Lollipop soufflé I love cake pudding liquorice powder.</p>
+							<p class="text-sm text-neutral-400">Find investors that match your startup. Get a curated list of VCs interested in your industry, stage, and geography.</p>
 							<a href="#" class="text-sm text-white inline-block mt-2">Learn more →</a>
 						</div>
 					</div>
