@@ -1,10 +1,14 @@
 <script lang="ts">
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
 	import { page } from '$app/state';
 	import { invalidateAll } from '$app/navigation';
 	import { pb } from '$lib/pocketbase';
 	import ProceedIdeaModal from '$lib/components/ProceedIdeaModal.svelte';
+
 	import Button from '$lib/components/ui/Button.svelte';
 	import Field from '$lib/components/ui/Field.svelte';
+	import Skeleton from '$lib/components/ui/Skeleton.svelte';
 	import { generateIdeaPdf } from '$lib/pdf-report';
 
 	interface Analysis {
@@ -38,6 +42,14 @@
 		duration?: number;
 	}
 
+	async function fetchIdea(ideaId: string): Promise<Idea | null> {
+		try {
+			return await pb.collection('ideas').getOne<Idea>(ideaId, { expand: 'analyses' });
+		} catch {
+			return null;
+		}
+	}
+
 	const NAV_ORDER = [
 		'market',
 		'problem',
@@ -58,7 +70,22 @@
 	}>();
 
 	const id = $derived(page.params.id);
-	const idea = $derived(data.idea);
+	let polledIdea = $state<Idea | null>(null);
+
+	$effect(() => {
+		const currentId = id;
+		return () => {
+			polledIdea = null;
+		};
+	});
+
+	const idea = $derived(polledIdea ?? data.idea);
+
+	const ideaStore = writable<Idea | null>(null);
+	setContext('idea', ideaStore);
+	$effect(() => {
+		ideaStore.set(idea);
+	});
 	const runningSmoke = $derived(data.runningSmoke);
 	const analyses = $derived(idea?.expand?.analyses ?? []);
 	const canBuildSmokeTest = $derived(
@@ -74,20 +101,36 @@
 		)
 	);
 
+	const currentAnalysisId = $derived(page.url.searchParams.get('analysis'));
+	const currentAnalysis = $derived(
+		analyses.find((a: Analysis) => a.id === currentAnalysisId) ?? null
+	);
+
 	const shouldPoll = $derived(
 		idea != null &&
 		idea.title &&
 		idea.title !== 'none' &&
-		analyses.some((a: Analysis) => a.status === 'in_progress' || a.status === 'pending')
+		(
+			analyses.some((a: Analysis) => a.status === 'in_progress' || a.status === 'pending') ||
+			(currentAnalysis != null && currentAnalysis.result == null)
+		)
 	);
 
 	$effect(() => {
-		if (!shouldPoll) return;
-		const interval = setInterval(() => invalidateAll(), 2000);
+		if (!shouldPoll || !id) return;
+		const ideaId = id;
+		const poll = async () => {
+			const fresh = await fetchIdea(ideaId);
+			if (fresh) polledIdea = fresh;
+		};
+		poll();
+		const interval = setInterval(poll, 2000);
 		return () => clearInterval(interval);
 	});
 
 	function getScore(a: Analysis): string | number | null {
+		const typeKey = (a.type ?? '').toLowerCase().replace(/\s+/g, '_');
+		if (typeKey === 'financial') return null;
 		const r = a.result as Record<string, unknown> | null;
 		if (!r || typeof r !== 'object') return null;
 		if (typeof r.score === 'number') return r.score;
@@ -194,10 +237,6 @@
 		{ label: 'Founder specific', value: idea?.founder_specific ?? '' }
 	]);
 
-	const currentAnalysisId = $derived(page.url.searchParams.get('analysis'));
-	const currentAnalysis = $derived(
-		analyses.find((a: Analysis) => a.id === currentAnalysisId) ?? null
-	);
 	const headerScore = $derived(currentAnalysis ? getScore(currentAnalysis) : null);
 
 	const isSmokeTestPage = $derived(page.url.pathname.endsWith('/smoke-test'));
@@ -207,7 +246,7 @@
 	<div class="min-h-[calc(100vh-65px)] bg-neutral-800">
 		{@render children()}
 	</div>
-{:else if idea}
+{:else if id}
 	<div class="flex h-[calc(100vh-65px)] overflow-hidden bg-neutral-800">
 		<aside class="w-80 shrink-0 bg-neutral-900 flex flex-col h-full pr-5 overflow-hidden">
 			<nav class="flex-1 p-3 space-y-0.5 min-h-0 overflow-hidden">
@@ -222,6 +261,8 @@
 							<span>{item.label}</span>
 							{#if getScoreLabel(item.analysis)}
 								<span class="font-sans text-neutral-400 text-xs font-semibold">{getScoreLabel(item.analysis)}</span>
+							{:else if item.analysis.result == null}
+								<Skeleton class="h-4 w-8 shrink-0" />
 							{/if}
 						</a>
 					{/if}
@@ -242,7 +283,8 @@
 					</div>
 				{/if}
 
-				<div class="space-y-2">
+				{#if idea}
+			<div class="space-y-2">
 					<Button
 						type="button"
 						variant="primary"
@@ -259,7 +301,7 @@
 						color="grey"
 						size="md"
 						class="w-full"
-						onclick={() => idea && generateIdeaPdf(idea)}
+						onclick={() => generateIdeaPdf(idea)}
 					>
 						Download as PDF
 					</Button>
@@ -277,6 +319,7 @@
 						Add to bundle
 					</Button>
 				</div>
+			{/if}
 			</div>
 		</aside>
 		<div class="flex-1 min-w-0 flex flex-col bg-neutral-900">
@@ -315,7 +358,12 @@
 					{/if}
 				{:else}
 					<div class="flex items-center gap-2 flex-wrap">
-						<h1 class="text-3xl font-normal text-white">{idea.title || 'Untitled'}</h1>
+						{#if idea?.title}
+							<h1 class="text-3xl font-normal text-white">{idea.title}</h1>
+						{:else}
+							<Skeleton class="h-9 w-64" />
+						{/if}
+						{#if idea}
 						<Button
 							type="button"
 							variant="icon"
@@ -330,39 +378,51 @@
 								<path d="m15 5 4 4" />
 							</svg>
 						</Button>
+						{/if}
 					</div>
-					{#if idea.description}
+					{#if idea?.description}
 						<p class="mt-2 text-neutral-400 text-[0.8125rem] whitespace-pre-wrap max-w-[50%]">{idea.description}</p>
 					{/if}
 				{/if}
 				</div>
-				{#if headerScore != null}
-					{@const headerStatus = getScoreStatus(headerScore)}
+				{#if currentAnalysis}
+					{@const isFinancial = (currentAnalysis.type ?? '').toLowerCase().replace(/\s+/g, '_') === 'financial'}
+					{#if !isFinancial}
 					<div class="shrink-0 flex items-center gap-4 justify-end">
-						{#if headerStatus}
-							<span
-								class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border {headerStatus.variant ===
-								'valid'
-									? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
-									: headerStatus.variant === 'problematic'
-										? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
-										: 'bg-red-500/20 text-red-400 border-red-500/40'}"
-							>
-								{#if headerStatus.variant === 'valid'}
-									<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
-								{:else if headerStatus.variant === 'problematic'}
-									<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg>
-								{:else}
-									<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
-								{/if}
-								{headerStatus.label}
-							</span>
+						{#if headerScore != null}
+							{@const headerStatus = getScoreStatus(headerScore)}
+							{#if headerStatus}
+								<span
+									class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border {headerStatus.variant ===
+									'valid'
+										? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+										: headerStatus.variant === 'problematic'
+											? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
+											: 'bg-red-500/20 text-red-400 border-red-500/40'}"
+								>
+									{#if headerStatus.variant === 'valid'}
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+									{:else if headerStatus.variant === 'problematic'}
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg>
+									{:else}
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+									{/if}
+									{headerStatus.label}
+								</span>
+							{/if}
+							<div class="text-right">
+								<span class="text-2xl font-semibold text-white">{typeof headerScore === 'number' ? headerScore.toFixed(headerScore % 1 === 0 ? 0 : 2) : headerScore}</span>
+								<span class="text-sm text-neutral-500 align-super -ml-0.5">/100</span>
+							</div>
+						{:else}
+							<Skeleton class="h-6 w-16 rounded-full" />
+							<div class="flex items-baseline gap-1">
+								<Skeleton class="h-8 w-14" />
+								<span class="text-sm text-neutral-500">/100</span>
+							</div>
 						{/if}
-						<div class="text-right">
-							<span class="text-2xl font-semibold text-white">{typeof headerScore === 'number' ? headerScore.toFixed(headerScore % 1 === 0 ? 0 : 2) : headerScore}</span>
-							<span class="text-sm text-neutral-500 align-super -ml-0.5">/100</span>
-						</div>
 					</div>
+					{/if}
 				{/if}
 			</header>
 			<main class="flex-1 min-h-0 overflow-auto bg-neutral-800 rounded-tl-xl rounded-tr-xl mt-2 ml-2 mr-2">

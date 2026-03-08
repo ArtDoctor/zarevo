@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { getContext } from 'svelte';
 	import { page } from '$app/state';
 	import CompetitorAnalysisView from '$lib/components/CompetitorAnalysisView.svelte';
 	import CustomerAnalysisView from '$lib/components/CustomerAnalysisView.svelte';
@@ -7,6 +8,7 @@
 	import MarketAnalysisView from '$lib/components/MarketAnalysisView.svelte';
 	import ProblemAnalysisView from '$lib/components/ProblemAnalysisView.svelte';
 	import TechnicalAnalysisView from '$lib/components/TechnicalAnalysisView.svelte';
+	import AnalysisSkeleton from '$lib/components/AnalysisSkeleton.svelte';
 	import { isCompetitorAnalysis } from '$lib/types/competitor-analysis';
 	import { isCustomerAnalysis } from '$lib/types/customer-analysis';
 	import { isFinancialAnalysis } from '$lib/types/financial-analysis';
@@ -29,9 +31,10 @@
 
 	let { data } = $props<{ data: { idea: Idea | null } }>();
 
+	const ideaStore = getContext<import('svelte/store').Writable<Idea | null>>('idea');
+	const idea = $derived(ideaStore ? $ideaStore : data.idea);
 	const id = $derived(page.params.id);
 	const analysisId = $derived(page.url.searchParams.get('analysis'));
-	const idea = $derived(data.idea);
 	const analysis = $derived(
 		idea?.expand?.analyses?.find((a: { id: string }) => a.id === analysisId) ?? null
 	);
@@ -104,8 +107,8 @@
 					<pre class="p-4 rounded-xl text-sm text-neutral-300 overflow-x-auto font-mono" style="background-color: #1C1C1C">{JSON.stringify(analysis.result, null, 2)}</pre>
 				{/if}
 			{:else}
-				<p class="text-sm text-neutral-400">No result yet</p>
-			{/if}
+					<AnalysisSkeleton />
+				{/if}
 		</div>
 	{/if}
 </div>
