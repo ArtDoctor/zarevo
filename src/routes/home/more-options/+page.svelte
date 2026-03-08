@@ -3,6 +3,7 @@
 </script>
 
 <svelte:head>
+	<title>More Options - Zarevo</title>
 	<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.67/build/spline-viewer.js"></script>
 </svelte:head>
 

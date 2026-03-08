@@ -15,6 +15,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Sign Up - Zarevo</title>
+</svelte:head>
+
 <div class="min-h-[60vh] flex flex-col items-center justify-center px-4">
 	<div
 		class="mb-8 p-6 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-center max-w-lg"

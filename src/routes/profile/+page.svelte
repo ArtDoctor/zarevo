@@ -99,6 +99,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Profile - Zarevo</title>
+</svelte:head>
+
 <div class="max-w-2xl mx-auto py-12 px-4">
 	<h1 class="text-2xl">Profile</h1>
 	<p class="mt-1 text-zinc-600 dark:text-zinc-400">Your account settings and preferences.</p>

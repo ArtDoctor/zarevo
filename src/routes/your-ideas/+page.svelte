@@ -142,6 +142,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Your Ideas - Zarevo</title>
+</svelte:head>
+
 <div class="max-w-4xl mx-auto py-12 px-4">
 	<div class="flex flex-wrap items-center gap-4 mb-8">
 		<h1 class="text-2xl">Your ideas</h1>

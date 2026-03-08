@@ -124,6 +124,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Smoke Test - Zarevo</title>
+</svelte:head>
+
 <svelte:window onkeydown={handleKeydown} />
 
 <div class="max-w-2xl mx-auto py-12 px-4">

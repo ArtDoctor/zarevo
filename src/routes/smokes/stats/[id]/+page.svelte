@@ -112,6 +112,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Smoke Test Stats - Zarevo</title>
+</svelte:head>
+
 <div class="max-w-2xl mx-auto py-12 px-4">
 	<a
 		href="/your-ideas"

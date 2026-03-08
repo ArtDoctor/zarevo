@@ -170,6 +170,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Build Smoke Test - Zarevo</title>
+</svelte:head>
+
 <div class="max-w-2xl mx-auto py-12 px-4">
 	<a
 		href="/idea/{id}"

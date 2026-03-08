@@ -101,6 +101,7 @@
 </script>
 
 <svelte:head>
+	<title>Home - Zarevo</title>
 	<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.67/build/spline-viewer.js"></script>
 </svelte:head>
 
@@ -137,7 +138,7 @@
 			<IdeaInput
 				onSubmit={handleSubmit}
 				onSubmitPro={handleSubmitPro}
-				advancedPath="/home/advanced"
+				advancedPath="/home/more-options"
 				credits={credits}
 				isAuthenticated={pb.authStore.isValid}
 				disabled={submitting}

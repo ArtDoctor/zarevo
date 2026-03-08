@@ -79,6 +79,10 @@
 	);
 </script>
 
+<svelte:head>
+	<title>Idea - Zarevo</title>
+</svelte:head>
+
 <div class="min-h-full py-4 px-4 md:py-8 md:px-[3.6rem] lg:px-[4.8rem]">
 	{#if !idea}
 		<p class="text-neutral-400">Loading...</p>

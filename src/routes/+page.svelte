@@ -88,6 +88,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>New Idea - Zarevo</title>
+</svelte:head>
+
 <div class="max-w-2xl mx-auto py-12 px-4">
 	<h1 class="text-2xl mb-2">New idea</h1>
 	<p class="text-sm text-zinc-600 dark:text-zinc-400 mb-8">

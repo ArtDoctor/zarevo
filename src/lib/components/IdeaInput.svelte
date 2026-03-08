@@ -16,7 +16,7 @@
 	let {
 		onSubmit,
 		onSubmitPro,
-		advancedPath = '/home/advanced',
+		advancedPath = '/home/more-options',
 		credits = 0,
 		isAuthenticated = false,
 		disabled = false
