@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { currentUser, pb } from '$lib/pocketbase';
 	import IdeaInput from '$lib/components/IdeaInput.svelte';
+	import Footer from '$lib/components/layout/Footer.svelte';
 	import { setValidationForm } from '$lib/stores/validation-form';
 	import { requestSignIn } from '$lib/stores/auth-modal';
 	import { createIdeaAndNavigate, createIdeaAdvancedAndNavigate } from '$lib/api/ideas';
@@ -13,9 +14,22 @@
 
 	let submitting = $state(false);
 	let error = $state<string | null>(null);
+	let creditAmount = $state(72);
 
 	const user = $derived($currentUser as UserRecord | null);
 	const credits = $derived(user?.credits ?? 0);
+
+	function calculatePrice(credits: number): number {
+		const basePrice = 0.20;
+		const discount = Math.min((credits - 24) / 476 * 0.30, 0.30);
+		const pricePerCredit = basePrice * (1 - discount);
+		return Math.round(credits * pricePerCredit);
+	}
+
+	function calculatePricePerCredit(credits: number): string {
+		const totalPrice = calculatePrice(credits);
+		return (totalPrice / credits).toFixed(2);
+	}
 
 	onMount(() => {
 		if (pb.authStore.isValid) {
@@ -89,6 +103,25 @@
 <svelte:head>
 	<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.67/build/spline-viewer.js"></script>
 </svelte:head>
+
+<style>
+	input[type="range"]::-webkit-slider-thumb {
+		appearance: none;
+		width: 30px;
+		height: 20px;
+		border-radius: 2px;
+		background: #F05322;
+		cursor: pointer;
+	}
+
+	input[type="range"]::-moz-range-thumb {
+		width: 30px;
+		height: 20px;
+		border-radius: 2px;
+		background: #F05322;
+		cursor: pointer;
+	}
+</style>
 
 <!-- Hero Section -->
 <section class="min-h-[90vh] w-screen bg-linear-to-b from-neutral-900 to-neutral-950 -mx-3 relative left-1/2 right-1/2 -translate-x-1/2 overflow-hidden">
@@ -258,10 +291,59 @@
 </section>
 
 	<!-- Pricing Section -->
-	<section id="pricing" class="py-20 px-4 bg-neutral-900/30">
-		<div class="max-w-4xl mx-auto">
-			<h2 class="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-6">Pricing</h2>
-			<p class="text-lg text-zinc-600 dark:text-zinc-400">Plans and pricing options.</p>
+	<section id="pricing" class="p-2 lg:p-12 mt-24 rounded-lg bg-neutral-800">
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-2 items-stretch">
+			<!-- Left Container - Pay as you go -->
+			<div class="flex flex-col justify-between bg-neutral-950 rounded-md p-6">
+				<div>
+					<div class="flex items-center gap-2 mb-6">
+						<h2 class="text-5xl text-white font-light">{creditAmount}</h2>
+						<img src="/credit.svg" alt="credit" class="w-6 h-6" />
+					</div>
+					
+					<input 
+						type="range" 
+						min="24" 
+						max="500" 
+						step="1" 
+						bind:value={creditAmount}
+						class="w-full h-2 bg-neutral-700 rounded-lg appearance-none cursor-pointer mb-6"
+						style="background: linear-gradient(to right, #F05322 0%, #F05322 {((creditAmount - 24) / (500 - 24)) * 100}%, #404040 {((creditAmount - 24) / (500 - 24)) * 100}%, #404040 100%);"
+					/>
+				</div>
+				
+				<div>
+					<button class="w-full bg-white text-black py-3 px-6 rounded-md font-medium hover:bg-neutral-100 transition-colors">
+						Buy for {calculatePrice(creditAmount)}$
+					</button>
+					<p class="text-sm text-neutral-400 text-right mt-2">{calculatePricePerCredit(creditAmount)}$/credit</p>
+				</div>
+			</div>
+
+			<!-- Right Container - Unlimited subscription -->
+			<div class="flex flex-col justify-between bg-neutral-950/70 rounded-md p-6">
+				<div>
+					<h2 class="text-2xl text-white mb-6">Unlimited</h2>
+					
+					<div class="space-y-3">
+						<div class="flex items-start gap-2">
+							<span class="text-primary mt-1">✦</span>
+							<p class="text-white">Unlimited ideas</p>
+						</div>
+						
+						<div class="flex items-start gap-2">
+							<span class="text-primary mt-1">✦</span>
+							<p class="text-white">Access to all advanced features</p>
+						</div>
+					</div>
+				</div>
+				
+				<div class="mt-6">
+					<button class="w-full bg-neutral-800 text-white py-3 px-6 rounded-md font-medium hover:bg-neutral-700 transition-colors">
+						Buy for 149$/month
+					</button>
+				</div>
+			</div>
 		</div>
 	</section>
 
@@ -272,3 +354,5 @@
 		<p class="text-lg text-zinc-600 dark:text-zinc-400">Frequently asked questions.</p>
 	</div>
 </section>
+
+<Footer />
