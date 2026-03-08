@@ -26,13 +26,11 @@
 	let loading = $state(true);
 	let subdomain = $state('');
 	let duration = $state(7);
-	let selectedChannels = $state<string[]>([]);
 	let deploying = $state(false);
 	let deployError = $state<string | null>(null);
+	let showAdsWipPopup = $state(false);
 
-	const creditPrice = $derived(
-		Math.ceil(duration / 3) * (1 + selectedChannels.length)
-	);
+	const creditPrice = $derived(Math.ceil(duration / 3));
 
 	let smokeHtml = $state<string | null>(null);
 
@@ -55,10 +53,8 @@
 		}
 	}
 
-	function toggleChannel(channelId: string) {
-		selectedChannels = selectedChannels.includes(channelId)
-			? selectedChannels.filter((c) => c !== channelId)
-			: [...selectedChannels, channelId];
+	function onAdChannelClick() {
+		showAdsWipPopup = true;
 	}
 
 	function openPreviewInNewTab() {
@@ -87,7 +83,7 @@
 			}
 			const ads_channels = ADS_CHANNELS.map((ch) => ({
 				channel: ch.id,
-				advertised: selectedChannels.includes(ch.id) ? 'yes' : 'no'
+				advertised: 'no'
 			}));
 			const res = await fetch(`${backendUrl.replace(/\/$/, '')}/api/smokes/publish`, {
 				method: 'POST',
@@ -122,7 +118,13 @@
 		const interval = setInterval(fetchSmoke, 1000);
 		return () => clearInterval(interval);
 	});
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape' && showAdsWipPopup) showAdsWipPopup = false;
+	}
 </script>
+
+<svelte:window onkeydown={handleKeydown} />
 
 <div class="max-w-2xl mx-auto py-12 px-4">
 	{#if loading}
@@ -220,23 +222,21 @@
 							{#each ADS_CHANNELS as ch}
 								<button
 									type="button"
-									onclick={() => toggleChannel(ch.id)}
-									class="px-3 py-1.5 rounded-md border text-sm transition-colors {selectedChannels.includes(ch.id)
-										? 'border-primary bg-primary/20 text-primary'
-										: 'border-neutral-600 bg-neutral-800 hover:bg-neutral-700'}"
+									onclick={onAdChannelClick}
+									class="px-3 py-1.5 rounded-md border border-neutral-600 bg-neutral-800 text-muted hover:bg-neutral-700 text-sm transition-colors cursor-pointer"
 								>
 									{ch.label}
 								</button>
 							{/each}
 						</div>
-						<p class="mt-1 text-xs text-muted">+1 credit per 3 days per channel</p>
+						<p class="mt-1 text-xs text-muted">Coming soon</p>
 					</div>
 
 					<div class="rounded-md border border-neutral-600 bg-neutral-800/50 px-4 py-3">
 						<p class="text-sm text-muted">Credit cost</p>
 						<p class="text-xl font-semibold text-primary">{creditPrice} credits</p>
 						<p class="text-xs text-muted mt-1">
-							1 credit per 3 days base ({Math.ceil(duration / 3)}) + {selectedChannels.length} channel{selectedChannels.length === 1 ? '' : 's'} × {Math.ceil(duration / 3)}
+							1 credit per 3 days base ({Math.ceil(duration / 3)})
 						</p>
 					</div>
 
@@ -268,3 +268,33 @@
 		<p class="text-muted">Failed to load smoke test</p>
 	{/if}
 </div>
+
+{#if showAdsWipPopup}
+	<div
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+		role="button"
+		tabindex="0"
+		onclick={() => (showAdsWipPopup = false)}
+		onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showAdsWipPopup = false; } }}
+	>
+		<div
+			class="surface-card p-6 max-w-sm mx-4 rounded-lg shadow-xl"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => { if (e.key !== 'Escape') e.stopPropagation(); else showAdsWipPopup = false; }}
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="wip-title"
+			tabindex="-1"
+		>
+			<p id="wip-title" class="text-white font-medium">SEO ads</p>
+			<p class="mt-2 text-muted text-sm">Work in progress. Coming soon.</p>
+			<button
+				type="button"
+				onclick={() => (showAdsWipPopup = false)}
+				class="mt-4 btn btn-primary w-full"
+			>
+				OK
+			</button>
+		</div>
+	</div>
+{/if}
