@@ -65,7 +65,7 @@
 	] as const;
 
 	let { data, children } = $props<{
-		data: { idea: Idea | null; runningSmoke: SmokeRecord | null };
+		data: { idea: Idea | null; runningSmokes: SmokeRecord[] };
 		children: import('svelte').Snippet;
 	}>();
 
@@ -80,6 +80,7 @@
 	});
 
 	const idea = $derived(polledIdea ?? data.idea);
+	const runningSmokes = $derived(data.runningSmokes ?? []);
 
 	const ideaStore = writable<Idea | null>(null);
 	setContext('idea', ideaStore);
@@ -182,18 +183,22 @@
 		return ordered;
 	});
 
-	const smokeProgress = $derived.by(() => {
-		const s = runningSmoke;
-		if (!s?.start_date || (s.duration ?? 0) <= 0) return null;
-		const start = new Date(s.start_date);
-		const end = new Date(start);
-		end.setDate(end.getDate() + s.duration);
+	const smokeProgressList = $derived.by(() => {
 		const now = new Date();
-		if (now < start || now > end) return null;
-		const elapsed = (now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
-		const progress = Math.min(100, (elapsed / s.duration) * 100);
-		const daysLeft = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-		return { progress, daysLeft };
+		return runningSmokes
+			.map((s: SmokeRecord) => {
+				const duration = s.duration ?? 0;
+				if (!s?.start_date || duration <= 0) return null;
+				const start = new Date(s.start_date);
+				const end = new Date(start);
+				end.setDate(end.getDate() + duration);
+				if (now < start || now > end) return null;
+				const elapsed = (now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
+				const progress = Math.min(100, (elapsed / duration) * 100);
+				const daysLeft = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+				return { smoke: s, progress, daysLeft };
+			})
+			.filter((x: { smoke: SmokeRecord; progress: number; daysLeft: number } | null): x is { smoke: SmokeRecord; progress: number; daysLeft: number } => x != null);
 	});
 
 	let showPromptModal = $state(false);
@@ -270,16 +275,20 @@
 			</nav>
 
 			<div class="shrink-0 p-3 border-t border-neutral-800 space-y-3 mt-auto">
-				{#if runningSmoke && smokeProgress}
-					<div>
-						<p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">Smoke test</p>
-						<div class="flex items-center gap-2 mb-1">
-							<div class="flex-1 h-2 rounded-full bg-neutral-800 overflow-hidden">
-								<div class="h-full bg-primary rounded-full transition-all" style="width: {smokeProgress.progress}%"></div>
+				{#if smokeProgressList.length > 0}
+					<div class="space-y-3">
+						<p class="text-xs font-medium text-neutral-500 uppercase tracking-wider">Smoke test{smokeProgressList.length > 1 ? 's' : ''}</p>
+						{#each smokeProgressList as { smoke, progress, daysLeft }}
+							<div>
+								<div class="flex items-center gap-2 mb-1">
+									<div class="flex-1 h-2 rounded-full bg-neutral-800 overflow-hidden">
+										<div class="h-full bg-primary rounded-full transition-all" style="width: {progress}%"></div>
+									</div>
+									<span class="text-xs text-neutral-400 shrink-0">{daysLeft} day{daysLeft === 1 ? '' : 's'} left</span>
+								</div>
+								<a href="/smokes/stats/{smoke.id}" class="text-xs text-primary hover:underline">View results →</a>
 							</div>
-							<span class="text-xs text-neutral-400">{smokeProgress.daysLeft} day{smokeProgress.daysLeft === 1 ? '' : 's'} left</span>
-						</div>
-						<a href="/smokes/stats/{runningSmoke.id}" class="text-xs text-primary hover:underline">View results →</a>
+						{/each}
 					</div>
 				{/if}
 

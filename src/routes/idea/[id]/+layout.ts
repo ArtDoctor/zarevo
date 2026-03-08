@@ -46,16 +46,16 @@ export const ssr = false;
 export const load = async ({ params }: { params: { id?: string } }) => {
 	const id = params.id;
 	if (!id) {
-		return { idea: null, runningSmoke: null };
+		return { idea: null, runningSmokes: [] };
 	}
 	try {
 		const [record, smokes] = await Promise.all([
 			pb.collection('ideas').getOne<Idea>(id, { expand: 'analyses' }),
 			pb.collection('smokes').getFullList<SmokeRecord>({ filter: `idea = "${id}"` }).catch(() => [] as SmokeRecord[])
 		]);
-		const runningSmoke = smokes.find(isRunning) ?? null;
-		return { idea: record, runningSmoke };
+		const runningSmokes = smokes.filter(isRunning);
+		return { idea: record, runningSmokes };
 	} catch {
-		return { idea: null, runningSmoke: null };
+		return { idea: null, runningSmokes: [] };
 	}
 };
