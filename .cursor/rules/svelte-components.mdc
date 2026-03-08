@@ -1,0 +1,24 @@
+---
+description: Reuse existing Svelte components before implementing new ones
+alwaysApply: true
+---
+
+# Reuse Svelte Components
+
+When developing anything, check if there are Svelte components implemented already that can be used instead.
+
+## Guidelines
+
+- Before creating a new component, search `src/lib/components/` for existing ones
+- Prefer composing from `ui/` primitives (Button, Field, ButtonGroup, etc.) and shared components
+- Only add new components when no suitable existing component exists or can be extended
+
+## Examples
+
+```svelte
+<!-- ❌ BAD - new button when Button.svelte exists -->
+<button class="px-4 py-2 rounded">Submit</button>
+
+<!-- ✅ GOOD - reuse existing component -->
+<Button>Submit</Button>
+```

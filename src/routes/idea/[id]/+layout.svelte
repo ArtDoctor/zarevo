@@ -1,8 +1,14 @@
 <script lang="ts">
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
 	import { page } from '$app/state';
 	import { invalidateAll } from '$app/navigation';
 	import { pb } from '$lib/pocketbase';
 	import ProceedIdeaModal from '$lib/components/ProceedIdeaModal.svelte';
+
+	import Button from '$lib/components/ui/Button.svelte';
+	import Field from '$lib/components/ui/Field.svelte';
+	import Skeleton from '$lib/components/ui/Skeleton.svelte';
 	import { generateIdeaPdf } from '$lib/pdf-report';
 
 	interface Analysis {
@@ -36,6 +42,14 @@
 		duration?: number;
 	}
 
+	async function fetchIdea(ideaId: string): Promise<Idea | null> {
+		try {
+			return await pb.collection('ideas').getOne<Idea>(ideaId, { expand: 'analyses' });
+		} catch {
+			return null;
+		}
+	}
+
 	const NAV_ORDER = [
 		'market',
 		'problem',
@@ -51,13 +65,28 @@
 	] as const;
 
 	let { data, children } = $props<{
-		data: { idea: Idea | null; runningSmoke: SmokeRecord | null };
+		data: { idea: Idea | null; runningSmokes: SmokeRecord[] };
 		children: import('svelte').Snippet;
 	}>();
 
 	const id = $derived(page.params.id);
-	const idea = $derived(data.idea);
-	const runningSmoke = $derived(data.runningSmoke);
+	let polledIdea = $state<Idea | null>(null);
+
+	$effect(() => {
+		const currentId = id;
+		return () => {
+			polledIdea = null;
+		};
+	});
+
+	const idea = $derived(polledIdea ?? data.idea);
+	const runningSmokes = $derived(data.runningSmokes ?? []);
+
+	const ideaStore = writable<Idea | null>(null);
+	setContext('idea', ideaStore);
+	$effect(() => {
+		ideaStore.set(idea);
+	});
 	const analyses = $derived(idea?.expand?.analyses ?? []);
 	const canBuildSmokeTest = $derived(
 		idea != null &&
@@ -72,20 +101,36 @@
 		)
 	);
 
+	const currentAnalysisId = $derived(page.url.searchParams.get('analysis'));
+	const currentAnalysis = $derived(
+		analyses.find((a: Analysis) => a.id === currentAnalysisId) ?? null
+	);
+
 	const shouldPoll = $derived(
 		idea != null &&
 		idea.title &&
 		idea.title !== 'none' &&
-		analyses.some((a: Analysis) => a.status === 'in_progress' || a.status === 'pending')
+		(
+			analyses.some((a: Analysis) => a.status === 'in_progress' || a.status === 'pending') ||
+			(currentAnalysis != null && currentAnalysis.result == null)
+		)
 	);
 
 	$effect(() => {
-		if (!shouldPoll) return;
-		const interval = setInterval(() => invalidateAll(), 2000);
+		if (!shouldPoll || !id) return;
+		const ideaId = id;
+		const poll = async () => {
+			const fresh = await fetchIdea(ideaId);
+			if (fresh) polledIdea = fresh;
+		};
+		poll();
+		const interval = setInterval(poll, 2000);
 		return () => clearInterval(interval);
 	});
 
 	function getScore(a: Analysis): string | number | null {
+		const typeKey = (a.type ?? '').toLowerCase().replace(/\s+/g, '_');
+		if (typeKey === 'financial') return null;
 		const r = a.result as Record<string, unknown> | null;
 		if (!r || typeof r !== 'object') return null;
 		if (typeof r.score === 'number') return r.score;
@@ -99,6 +144,15 @@
 		const score = getScore(a);
 		if (score === null) return '';
 		return typeof score === 'number' ? String(score) : score;
+	}
+
+	type ScoreStatus = { label: 'Valid'; variant: 'valid' } | { label: 'Problematic'; variant: 'problematic' } | { label: 'Risky'; variant: 'risky' } | null;
+	function getScoreStatus(score: string | number | null): ScoreStatus {
+		const n = typeof score === 'number' ? score : typeof score === 'string' ? parseFloat(score) : NaN;
+		if (Number.isNaN(n)) return null;
+		if (n > 80) return { label: 'Valid', variant: 'valid' };
+		if (n >= 60) return { label: 'Problematic', variant: 'problematic' };
+		return { label: 'Risky', variant: 'risky' };
 	}
 
 	const navItems = $derived.by(() => {
@@ -128,20 +182,25 @@
 		return ordered;
 	});
 
-	const smokeProgress = $derived.by(() => {
-		const s = runningSmoke;
-		if (!s?.start_date || (s.duration ?? 0) <= 0) return null;
-		const start = new Date(s.start_date);
-		const end = new Date(start);
-		end.setDate(end.getDate() + s.duration);
+	const smokeProgressList = $derived.by(() => {
 		const now = new Date();
-		if (now < start || now > end) return null;
-		const elapsed = (now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
-		const progress = Math.min(100, (elapsed / s.duration) * 100);
-		const daysLeft = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-		return { progress, daysLeft };
+		return runningSmokes
+			.map((s: SmokeRecord) => {
+				const duration = s.duration ?? 0;
+				if (!s?.start_date || duration <= 0) return null;
+				const start = new Date(s.start_date);
+				const end = new Date(start);
+				end.setDate(end.getDate() + duration);
+				if (now < start || now > end) return null;
+				const elapsed = (now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
+				const progress = Math.min(100, (elapsed / duration) * 100);
+				const daysLeft = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+				return { smoke: s, progress, daysLeft };
+			})
+			.filter((x: { smoke: SmokeRecord; progress: number; daysLeft: number } | null): x is { smoke: SmokeRecord; progress: number; daysLeft: number } => x != null);
 	});
 
+	let showSidebar = $state(false);
 	let showPromptModal = $state(false);
 	let showProceedModal = $state(false);
 	let editingTitle = $state(false);
@@ -183,28 +242,56 @@
 		{ label: 'Founder specific', value: idea?.founder_specific ?? '' }
 	]);
 
-	const currentAnalysisId = $derived(page.url.searchParams.get('analysis'));
-	const currentAnalysis = $derived(
-		analyses.find((a: Analysis) => a.id === currentAnalysisId) ?? null
-	);
-	const headerScore = $derived(getScore(currentAnalysis));
+	const headerScore = $derived(currentAnalysis ? getScore(currentAnalysis) : null);
+
+	const isSmokeTestPage = $derived(page.url.pathname.endsWith('/smoke-test'));
 </script>
 
-{#if idea}
-	<div class="flex min-h-[calc(100vh-56px)] bg-neutral-800">
-		<aside class="w-80 shrink-0 bg-neutral-900 flex flex-col h-[calc(100vh-56px)] pr-5">
-			<nav class="flex-1 p-3 space-y-0.5 overflow-y-auto min-h-0">
+{#if idea && isSmokeTestPage}
+	<div class="min-h-[calc(100vh-65px)] bg-neutral-800">
+		{@render children()}
+	</div>
+{:else if id}
+	<div class="flex h-[calc(100vh-65px)] overflow-hidden bg-neutral-800 relative">
+		{#if showSidebar}
+			<button
+				type="button"
+				class="fixed inset-0 z-40 bg-black/50 md:hidden"
+				aria-label="Close menu"
+				onclick={() => (showSidebar = false)}
+			></button>
+		{/if}
+		<aside
+			class="fixed md:relative inset-y-0 left-0 z-50 w-80 shrink-0 bg-neutral-900 flex flex-col h-full pr-5 overflow-hidden transition-transform duration-200 ease-out md:translate-x-0 {showSidebar
+				? 'translate-x-0'
+				: '-translate-x-full md:translate-x-0'}"
+		>
+			<nav class="flex-1 p-3 space-y-0.5 min-h-0 overflow-hidden">
+				<div class="flex items-center justify-between mb-2 md:hidden">
+					<span class="text-sm font-medium text-white">Analyses</span>
+					<button
+						type="button"
+						class="p-2 -mr-2 rounded-lg text-neutral-400 hover:bg-neutral-800 hover:text-white"
+						aria-label="Close menu"
+						onclick={() => (showSidebar = false)}
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+					</button>
+				</div>
 				{#each navItems as item}
 					{#if item.analysis}
 						<a
 							href="/idea/{id}?analysis={item.analysis.id}"
-							class="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors {page.url.searchParams.get('analysis') === item.analysis.id
+							class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {page.url.searchParams.get('analysis') === item.analysis.id
 								? 'bg-neutral-800 text-white'
 								: 'text-neutral-400 hover:bg-neutral-900 hover:text-white'}"
+							onclick={() => (showSidebar = false)}
 						>
 							<span>{item.label}</span>
 							{#if getScoreLabel(item.analysis)}
 								<span class="font-sans text-neutral-400 text-xs font-semibold">{getScoreLabel(item.analysis)}</span>
+							{:else if item.analysis.result == null}
+								<Skeleton class="h-4 w-8 shrink-0" />
 							{/if}
 						</a>
 					{/if}
@@ -212,42 +299,79 @@
 			</nav>
 
 			<div class="shrink-0 p-3 border-t border-neutral-800 space-y-3 mt-auto">
-				{#if runningSmoke && smokeProgress}
-					<div>
-						<p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">Smoke test</p>
-						<div class="flex items-center gap-2 mb-1">
-							<div class="flex-1 h-2 rounded-full bg-neutral-800 overflow-hidden">
-								<div class="h-full bg-primary rounded-full transition-all" style="width: {smokeProgress.progress}%"></div>
+				{#if smokeProgressList.length > 0}
+					<div class="space-y-3">
+						<p class="text-xs font-medium text-neutral-500 uppercase tracking-wider">Smoke test{smokeProgressList.length > 1 ? 's' : ''}</p>
+						{#each smokeProgressList as { smoke, progress, daysLeft }}
+							<div>
+								<div class="flex items-center gap-2 mb-1">
+									<div class="flex-1 h-2 rounded-full bg-neutral-800 overflow-hidden">
+										<div class="h-full bg-primary rounded-full transition-all" style="width: {progress}%"></div>
+									</div>
+									<span class="text-xs text-neutral-400 shrink-0">{daysLeft} day{daysLeft === 1 ? '' : 's'} left</span>
+								</div>
+								<a href="/smokes/stats/{smoke.id}" class="text-xs text-primary hover:underline">View results →</a>
 							</div>
-							<span class="text-xs text-neutral-400">{smokeProgress.daysLeft} day{smokeProgress.daysLeft === 1 ? '' : 's'} left</span>
-						</div>
-						<a href="/smokes/stats/{runningSmoke.id}" class="text-xs text-primary hover:underline">View results →</a>
+						{/each}
 					</div>
 				{/if}
 
-				<div class="space-y-2">
-					<button type="button" class="w-full py-2.5 rounded-sm font-medium text-sm text-white transition-colors hover:brightness-110 cursor-pointer" style="background-color: #0CA12D" onclick={() => (showProceedModal = true)}>
-						Proceed with this idea
-					</button>
-					<button
+				{#if idea}
+			<div class="space-y-2">
+					<Button
 						type="button"
-						class="w-full py-2 rounded-sm font-medium text-sm bg-neutral-800 hover:bg-neutral-700 text-white transition-colors cursor-pointer"
-						onclick={() => idea && generateIdeaPdf(idea)}
+						variant="primary"
+						color="orange"
+						size="lg"
+						class="w-full !bg-[#0CA12D] hover:!brightness-110"
+						onclick={() => (showProceedModal = true)}
+					>
+						Proceed with this idea
+					</Button>
+					<Button
+						type="button"
+						variant="normal"
+						color="grey"
+						size="md"
+						class="w-full"
+						onclick={() => generateIdeaPdf(idea)}
 					>
 						Download as PDF
-					</button>
-					<button type="button" class="w-full py-2 rounded-sm font-medium text-sm bg-neutral-800 hover:bg-neutral-700 text-white transition-colors cursor-pointer" onclick={() => (showPromptModal = true)}>
+					</Button>
+					<Button
+						type="button"
+						variant="normal"
+						color="grey"
+						size="md"
+						class="w-full"
+						onclick={() => (showPromptModal = true)}
+					>
 						Show prompt
-					</button>
-					<button type="button" disabled class="w-full py-2 rounded-sm font-medium text-sm bg-neutral-800 text-neutral-500 cursor-not-allowed">
+					</Button>
+					<Button type="button" variant="normal" color="grey" size="md" class="w-full" disabled>
 						Add to bundle
-					</button>
+					</Button>
 				</div>
+			{/if}
 			</div>
 		</aside>
-		<div class="flex-1 min-w-0 flex flex-col">
-			<header class="shrink-0 bg-neutral-900 px-6 py-6 flex items-start justify-between gap-4">
-				<div class="min-w-0 flex-1">
+		<div class="flex-1 min-w-0 flex flex-col bg-neutral-900">
+			<header class="shrink-0 bg-neutral-900 px-4 md:px-6 py-4 md:py-6 flex flex-wrap items-center justify-between gap-4">
+				<div class="flex items-center gap-2 min-w-0 flex-1">
+					<button
+						type="button"
+						class="md:hidden p-2 -ml-2 rounded-lg text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors"
+						aria-label="Open menu"
+						aria-expanded={showSidebar}
+						onclick={() => (showSidebar = true)}
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<line x1="4" x2="20" y1="12" y2="12" />
+							<line x1="4" x2="20" y1="6" y2="6" />
+							<line x1="4" x2="20" y1="18" y2="18" />
+						</svg>
+					</button>
+					<div class="min-w-0 flex-1">
 				{#if editingTitle}
 					<form
 						onsubmit={(e) => {
@@ -256,34 +380,43 @@
 						}}
 						class="flex flex-wrap items-center gap-2"
 					>
-						<input
-							type="text"
+						<Field
+							type="input"
 							bind:value={editTitleValue}
 							placeholder="Idea title"
-							class="flex-1 min-w-[200px] px-3 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-white text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+							class="flex-1 min-w-[200px] text-2xl font-semibold"
 						/>
-						<button type="submit" disabled={savingTitle} class="btn btn-sm btn-primary">
+						<Button type="submit" variant="primary" size="sm" disabled={savingTitle}>
 							{savingTitle ? 'Saving...' : 'Save'}
-						</button>
-						<button
+						</Button>
+						<Button
 							type="button"
+							variant="normal"
+							color="grey"
+							size="sm"
 							onclick={cancelEditTitle}
 							disabled={savingTitle}
-							class="px-3 py-2 rounded-sm bg-neutral-800 hover:bg-neutral-700 text-white text-sm disabled:opacity-50"
 						>
 							Cancel
-						</button>
+						</Button>
 					</form>
 					{#if titleError}
 						<p class="mt-1 text-sm text-red-400">{titleError}</p>
 					{/if}
 				{:else}
 					<div class="flex items-center gap-2 flex-wrap">
-						<h1 class="text-3xl font-normal text-white">{idea.title || 'Untitled'}</h1>
-						<button
+						{#if idea?.title}
+							<h1 class="text-xl md:text-3xl font-normal text-white break-words">{idea.title}</h1>
+						{:else}
+							<Skeleton class="h-9 w-64" />
+						{/if}
+						{#if idea}
+						<Button
 							type="button"
+							variant="icon"
+							color="grey"
+							size="sm"
 							onclick={startEditTitle}
-							class="p-1.5 rounded text-primary hover:bg-neutral-800 transition-colors"
 							title="Edit title"
 							aria-label="Edit title"
 						>
@@ -291,21 +424,56 @@
 								<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
 								<path d="m15 5 4 4" />
 							</svg>
-						</button>
+						</Button>
+						{/if}
 					</div>
-					{#if idea.description}
-						<p class="mt-2 text-neutral-400 text-[0.8125rem] whitespace-pre-wrap max-w-[50%]">{idea.description}</p>
+					{#if idea?.description}
+						<p class="mt-2 text-neutral-400 text-[0.8125rem] whitespace-pre-wrap max-w-full md:max-w-[50%]">{idea.description}</p>
 					{/if}
 				{/if}
-				</div>
-				{#if headerScore != null}
-					<div class="shrink-0 text-right">
-						<span class="text-2xl font-semibold text-white">{typeof headerScore === 'number' ? headerScore.toFixed(headerScore % 1 === 0 ? 0 : 2) : headerScore}</span>
-						<span class="text-sm text-neutral-500 align-super -ml-0.5">/100</span>
 					</div>
+				</div>
+				{#if currentAnalysis}
+					{@const isFinancial = (currentAnalysis.type ?? '').toLowerCase().replace(/\s+/g, '_') === 'financial'}
+					{#if !isFinancial}
+					<div class="shrink-0 flex items-center gap-4 justify-end">
+						{#if headerScore != null}
+							{@const headerStatus = getScoreStatus(headerScore)}
+							{#if headerStatus}
+								<span
+									class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border {headerStatus.variant ===
+									'valid'
+										? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+										: headerStatus.variant === 'problematic'
+											? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
+											: 'bg-red-500/20 text-red-400 border-red-500/40'}"
+								>
+									{#if headerStatus.variant === 'valid'}
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+									{:else if headerStatus.variant === 'problematic'}
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg>
+									{:else}
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+									{/if}
+									{headerStatus.label}
+								</span>
+							{/if}
+							<div class="text-right">
+								<span class="text-2xl font-semibold text-white">{typeof headerScore === 'number' ? headerScore.toFixed(headerScore % 1 === 0 ? 0 : 2) : headerScore}</span>
+								<span class="text-sm text-neutral-500 align-super -ml-0.5">/100</span>
+							</div>
+						{:else}
+							<Skeleton class="h-6 w-16 rounded-full" />
+							<div class="flex items-baseline gap-1">
+								<Skeleton class="h-8 w-14" />
+								<span class="text-sm text-neutral-500">/100</span>
+							</div>
+						{/if}
+					</div>
+					{/if}
 				{/if}
 			</header>
-			<main class="flex-1 min-h-0 overflow-auto bg-neutral-800">
+			<main class="flex-1 min-h-0 overflow-auto bg-neutral-800 md:rounded-tl-xl md:rounded-tr-xl md:mt-2 md:ml-2 md:mr-2">
 				{@render children()}
 			</main>
 		</div>
