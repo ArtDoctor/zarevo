@@ -42,6 +42,11 @@
 
 	async function onAuthSuccess() {
 		closeModal();
+		
+		// Sync auth to cookie immediately
+		const authCookie = pb.authStore.exportToCookie();
+		document.cookie = authCookie;
+		
 		const stored = get(validationFormStore);
 		if (stored.startupIdea.trim()) {
 			try {
@@ -62,10 +67,12 @@
 				}
 				clearValidationForm();
 			} catch {
-				goto('/', { replaceState: true });
+				// Use full page navigation to ensure server sees the cookie
+				window.location.href = '/';
 			}
 		} else {
-			goto('/', { replaceState: true });
+			// Use full page navigation to ensure server sees the cookie
+			window.location.href = '/';
 		}
 	}
 

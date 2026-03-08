@@ -21,6 +21,20 @@
 		}
 	});
 
+	// Sync client-side auth to cookie for server-side access
+	$effect(() => {
+		if (browser) {
+			// Manually construct the cookie to ensure it's set correctly
+			const authData = {
+				token: pb.authStore.token,
+				model: pb.authStore.model
+			};
+			const cookieValue = encodeURIComponent(JSON.stringify(authData));
+			const cookieString = `pb_auth=${cookieValue}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+			document.cookie = cookieString;
+		}
+	});
+
 	let profilePopupOpen = $state(false);
 	let profileMenuEl = $state<HTMLDivElement | undefined>(undefined);
 
@@ -38,7 +52,10 @@
 	function handleLogout() {
 		profilePopupOpen = false;
 		pb.authStore.clear();
-		goto('/home', { replaceState: true });
+		// Clear the auth cookie
+		document.cookie = 'pb_auth=; path=/; max-age=0';
+		// Use full page navigation to ensure server processes the cleared auth
+		window.location.href = '/home';
 	}
 </script>
 
@@ -148,7 +165,7 @@
 				</button>
 				<button
 					type="button"
-					onclick={requestSignUp}
+					onclick={() => requestSignUp()}
 					class="btn btn-md btn-primary"
 				>
 					Sign up

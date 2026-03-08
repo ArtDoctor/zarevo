@@ -8,6 +8,15 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.pb = new PocketBase(env.PB_URL || 'http://127.0.0.1:8090');
 	event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
 
+	// Validate the auth token if present
+	if (event.locals.pb.authStore.isValid) {
+		try {
+			await event.locals.pb.collection('users').authRefresh();
+		} catch {
+			event.locals.pb.authStore.clear();
+		}
+	}
+
 	const subdomain = getSubdomain(event.url.hostname);
 	if (subdomain) {
 		try {
