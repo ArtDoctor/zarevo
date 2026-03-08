@@ -320,10 +320,10 @@
 			<div class="space-y-2">
 					<Button
 						type="button"
-						variant="primary"
-						color="orange"
+						variant="normal"
+						color="green"
 						size="lg"
-						class="w-full !bg-[#0CA12D] hover:!brightness-110"
+						class="w-full"
 						onclick={() => (showProceedModal = true)}
 					>
 						Proceed with this idea

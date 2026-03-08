@@ -46,7 +46,7 @@
 				<button
 					type="button"
 					onclick={() => goto(advancedPath)}
-					class="flex items-center gap-1.5 text-xs font-medium text-neutral-300 hover:text-white transition-all px-4 py-1.5 rounded-md bg-neutral-800/80 hover:bg-neutral-700/80"
+					class="flex items-center gap-1.5 text-xs font-medium text-neutral-300 hover:text-white transition-all px-4 py-1.5 rounded-md bg-neutral-800/50 hover:bg-neutral-700/50"
 				>
 					<SlidersHorizontal size={14} strokeWidth={2.5} />
 					More options

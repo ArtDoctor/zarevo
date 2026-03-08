@@ -21,6 +21,16 @@
 		if (pb.authStore.isValid) {
 			goto('/', { replaceState: true });
 		}
+
+		const hash = window.location.hash;
+		if (hash) {
+			setTimeout(() => {
+				const element = document.querySelector(hash);
+				if (element) {
+					element.scrollIntoView({ behavior: 'smooth' });
+				}
+			}, 100);
+		}
 	});
 
 	async function handleSubmit(startupIdea: string) {
@@ -76,22 +86,80 @@
 	}
 </script>
 
-<div class="min-h-screen flex flex-col items-center justify-center px-4">
-	<div class="w-full max-w-2xl">
-	<h1 class="text-3xl md:text-4xl text-zinc-800 dark:text-zinc-200 mb-8">
-		Imagine a startup. <br /><span class="text-primary">Now validate it.</span>
-	</h1>
+<svelte:head>
+	<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.67/build/spline-viewer.js"></script>
+</svelte:head>
 
-	{#if error}
-		<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
-	{/if}
-	<IdeaInput
-		onSubmit={handleSubmit}
-		onSubmitPro={handleSubmitPro}
-		advancedPath="/home/advanced"
-		credits={credits}
-		isAuthenticated={pb.authStore.isValid}
-		disabled={submitting}
-	/>
+<!-- Hero Section -->
+<section class="min-h-[90vh] w-screen bg-linear-to-b from-neutral-900 to-neutral-950 -mx-3 relative left-1/2 right-1/2 -translate-x-1/2 overflow-hidden">
+	<div class="flex flex-col items-center justify-center px-4 relative z-10 min-h-[80vh]">
+		<div class="w-full max-w-2xl">
+			<h1 class="text-3xl md:text-4xl text-zinc-800 dark:text-zinc-200 mb-8">
+				Imagine a startup. <br /><span class="text-primary">Now validate it.</span>
+			</h1>
+
+			{#if error}
+				<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
+			{/if}
+			<IdeaInput
+				onSubmit={handleSubmit}
+				onSubmitPro={handleSubmitPro}
+				advancedPath="/home/advanced"
+				credits={credits}
+				isAuthenticated={pb.authStore.isValid}
+				disabled={submitting}
+			/>
+		</div>
 	</div>
-</div>
+	
+	<!-- Spline Animation -->
+	<div class="absolute bottom-0 left-0 w-full h-[400px] z-0">
+		<spline-viewer url="https://prod.spline.design/FVYpaJUhLfAnywyj/scene.splinecode" class="w-full h-full"></spline-viewer>
+	</div>
+</section>
+
+<!-- Intro Section -->
+<section class="p-12 mt-24 rounded-md" style="background-image: url('/cubes-bg.png'); background-size: cover; background-position: center;">
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-2 items-center">
+			<!-- Left Container - Text -->
+			<div class="flex flex-col justify-between h-full bg-neutral-950 rounded-md p-6">
+				<h2 class="text-2xl md:text-2xl text-white">
+					A tool for complex startup idea <span class="text-primary font-semibold">validation.</span><br />
+					Ideas in. Unicorn ideas out.
+				</h2>
+				<p class="text-lg text-white">
+					Picking a strong idea that solves a real problem<br />
+					and can actually make money is <span class="text-primary font-semibold">very important.</span>
+				</p>
+			</div>
+
+			<!-- Right Container - Mockup Image with Backdrop Blur -->
+			<div class="flex items-end justify-end rounded-xl pl-6 pt-6 overflow-hidden" style="background-color: rgba(10, 10, 10, 0.7); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);">
+				<img src="/idea-page-mockup.svg" alt="Idea validation mockup" class="w-full h-auto" />
+			</div>
+		</div>
+</section>
+
+<!-- Features Section -->
+	<section id="features" class="py-20 px-4">
+		<div class="max-w-4xl mx-auto">
+			<h2 class="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-6">Features</h2>
+			<p class="text-lg text-zinc-600 dark:text-zinc-400">Overview of product features and capabilities.</p>
+		</div>
+	</section>
+
+	<!-- Pricing Section -->
+	<section id="pricing" class="py-20 px-4 bg-neutral-900/30">
+		<div class="max-w-4xl mx-auto">
+			<h2 class="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-6">Pricing</h2>
+			<p class="text-lg text-zinc-600 dark:text-zinc-400">Plans and pricing options.</p>
+		</div>
+	</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="py-20 px-4">
+	<div class="max-w-4xl mx-auto">
+		<h2 class="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-6">FAQ</h2>
+		<p class="text-lg text-zinc-600 dark:text-zinc-400">Frequently asked questions.</p>
+	</div>
+</section>
