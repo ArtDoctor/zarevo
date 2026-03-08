@@ -108,8 +108,7 @@
 
 	const shouldPoll = $derived(
 		idea != null &&
-		idea.title &&
-		idea.title !== 'none' &&
+		(idea.title ?? '') !== 'none' &&
 		(
 			analyses.some((a: Analysis) => a.status === 'in_progress' || a.status === 'pending') ||
 			(currentAnalysis != null && currentAnalysis.result == null)
