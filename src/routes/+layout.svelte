@@ -82,7 +82,7 @@
 	bind:profileMenuRef={profileMenuEl}
 />
 
-<main class="min-h-[calc(100vh-65px)]">
+<main>
 	<div class="max-w-[1440px] mx-auto px-3">
 		{@render children()}
 	</div>

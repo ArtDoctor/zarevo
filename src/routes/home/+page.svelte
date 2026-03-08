@@ -21,6 +21,16 @@
 		if (pb.authStore.isValid) {
 			goto('/', { replaceState: true });
 		}
+
+		const hash = window.location.hash;
+		if (hash) {
+			setTimeout(() => {
+				const element = document.querySelector(hash);
+				if (element) {
+					element.scrollIntoView({ behavior: 'smooth' });
+				}
+			}, 100);
+		}
 	});
 
 	async function handleSubmit(startupIdea: string) {
@@ -76,22 +86,47 @@
 	}
 </script>
 
-<div class="min-h-screen flex flex-col items-center justify-center px-4">
+<!-- Hero Section -->
+<section class="min-h-[80vh] w-screen bg-linear-to-b from-neutral-900 to-neutral-950 flex flex-col items-center justify-center px-4 -mx-3 relative left-1/2 right-1/2 -translate-x-1/2">
 	<div class="w-full max-w-2xl">
-	<h1 class="text-3xl md:text-4xl text-zinc-800 dark:text-zinc-200 mb-8">
-		Imagine a startup. <br /><span class="text-primary">Now validate it.</span>
-	</h1>
+		<h1 class="text-3xl md:text-4xl text-zinc-800 dark:text-zinc-200 mb-8">
+			Imagine a startup. <br /><span class="text-primary">Now validate it.</span>
+		</h1>
 
-	{#if error}
-		<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
-	{/if}
-	<IdeaInput
-		onSubmit={handleSubmit}
-		onSubmitPro={handleSubmitPro}
-		advancedPath="/home/advanced"
-		credits={credits}
-		isAuthenticated={pb.authStore.isValid}
-		disabled={submitting}
-	/>
+		{#if error}
+			<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
+		{/if}
+		<IdeaInput
+			onSubmit={handleSubmit}
+			onSubmitPro={handleSubmitPro}
+			advancedPath="/home/advanced"
+			credits={credits}
+			isAuthenticated={pb.authStore.isValid}
+			disabled={submitting}
+		/>
 	</div>
-</div>
+</section>
+
+<!-- Features Section -->
+	<section id="features" class="py-20 px-4">
+		<div class="max-w-4xl mx-auto">
+			<h2 class="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-6">Features</h2>
+			<p class="text-lg text-zinc-600 dark:text-zinc-400">Overview of product features and capabilities.</p>
+		</div>
+	</section>
+
+	<!-- Pricing Section -->
+	<section id="pricing" class="py-20 px-4 bg-neutral-900/30">
+		<div class="max-w-4xl mx-auto">
+			<h2 class="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-6">Pricing</h2>
+			<p class="text-lg text-zinc-600 dark:text-zinc-400">Plans and pricing options.</p>
+		</div>
+	</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="py-20 px-4">
+	<div class="max-w-4xl mx-auto">
+		<h2 class="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-6">FAQ</h2>
+		<p class="text-lg text-zinc-600 dark:text-zinc-400">Frequently asked questions.</p>
+	</div>
+</section>

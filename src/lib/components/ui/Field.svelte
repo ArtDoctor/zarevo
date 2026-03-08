@@ -73,7 +73,7 @@
 		-webkit-backdrop-filter: blur(30px);
 		border: 1px solid rgba(64, 64, 64, 0.3);
 		color: white;
-		font-size: 0.875rem;
+		font-size: 1rem;
 		transition: all 0.3s ease;
 		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
 		background-image: linear-gradient(

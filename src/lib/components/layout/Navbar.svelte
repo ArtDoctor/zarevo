@@ -110,17 +110,17 @@
 
 					<!-- Desktop: Nav Links (centered) -->
 					<div class="hidden lg:flex items-center flex-1 justify-center gap-1">
-						<a href="/features" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
+						<a href="/home#features" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
 							<Button variant="link" color="grey" size="md" class="w-full">
 								Features
 							</Button>
 						</a>
-						<a href="/pricing" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
+						<a href="/home#pricing" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
 							<Button variant="link" color="grey" size="md" class="w-full">
 								Pricing
 							</Button>
 						</a>
-						<a href="/faq" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
+						<a href="/home#faq" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
 							<Button variant="link" color="grey" size="md" class="w-full">
 								FAQ
 							</Button>
@@ -143,17 +143,17 @@
 
 				<!-- Row 2: Nav Links (mobile/tablet only) -->
 				<div class="flex lg:hidden items-center gap-1">
-					<a href="/features" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
+					<a href="/home#features" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
 						<Button variant="link" color="grey" size="md" class="w-full">
 							Features
 						</Button>
 					</a>
-					<a href="/pricing" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
+					<a href="/home#pricing" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
 						<Button variant="link" color="grey" size="md" class="w-full">
 							Pricing
 						</Button>
 					</a>
-					<a href="/faq" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
+					<a href="/home#faq" class="w-full text-sm text-neutral-400 hover:text-white transition-colors">
 						<Button variant="link" color="grey" size="md" class="w-full">
 							FAQ
 						</Button>
