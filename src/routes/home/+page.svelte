@@ -254,7 +254,7 @@
 				<div class="mb-4">
 					<h3 class="text-orange-500 mb-3">Access to advanced features</h3>
 					
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-2 gap-2">
 						<div class="bg-neutral-800 rounded-md p-4">
 							<h4 class="text-white mb-1">Smoke test</h4>
 							<p class="text-sm text-neutral-400">Validate demand with a landing page before building. Test your value proposition with real users and collect early sign-ups.</p>
@@ -348,10 +348,61 @@
 	</section>
 
 <!-- FAQ Section -->
-<section id="faq" class="py-20 px-4">
-	<div class="max-w-4xl mx-auto">
-		<h2 class="text-3xl font-semibold text-zinc-800 dark:text-zinc-200 mb-6">FAQ</h2>
-		<p class="text-lg text-zinc-600 dark:text-zinc-400">Frequently asked questions.</p>
+<section id="faq" class="p-2 lg:p-12 mt-24 rounded-lg">
+	<div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+		<!-- Left Column -->
+		<div class="space-y-2">
+			<details class="bg-neutral-950 rounded-md px-6 py-2 group">
+				<summary class="text-white cursor-pointer list-none flex items-center justify-between">
+					<span>How does Zarevo work?</span>
+					<span class="text-2xl transition-transform group-open:rotate-45">+</span>
+				</summary>
+				<p class="text-sm text-neutral-400 my-2">Zarevo uses advanced AI to analyze your startup idea across multiple dimensions including market, competition, customers, and financials. Simply describe your idea and get comprehensive validation reports in minutes.</p>
+			</details>
+			
+			<details class="bg-neutral-950 rounded-md px-6 py-2 group">
+				<summary class="text-white cursor-pointer list-none flex items-center justify-between">
+					<span>Can I try it first?</span>
+					<span class="text-2xl transition-transform group-open:rotate-45">+</span>
+				</summary>
+				<p class="text-sm text-neutral-400 my-2">Yes! Sign up and get free credits to validate your first idea. You can test the basic validation features before committing to any purchase.</p>
+			</details>
+			
+			<details class="bg-neutral-950 rounded-md px-6 py-2 group">
+				<summary class="text-white cursor-pointer list-none flex items-center justify-between">
+					<span>Why do I need idea validation?</span>
+					<span class="text-2xl transition-transform group-open:rotate-45">+</span>
+				</summary>
+				<p class="text-sm text-neutral-400 my-2">Most startups fail because they build something nobody wants. Validating your idea early helps you understand market demand, competition, and potential challenges before investing significant time and money.</p>
+			</details>
+		</div>
+		
+		<!-- Right Column -->
+		<div class="space-y-2">
+			<details class="bg-neutral-950 rounded-md px-6 py-2 group">
+				<summary class="text-white cursor-pointer list-none flex items-center justify-between">
+					<span>Who is Zarevo for?</span>
+					<span class="text-2xl transition-transform group-open:rotate-45">+</span>
+				</summary>
+				<p class="text-sm text-neutral-400 my-2">Zarevo is perfect for aspiring entrepreneurs, founders validating new ideas, product managers exploring opportunities, and anyone looking to test a business concept before building.</p>
+			</details>
+			
+			<details class="bg-neutral-950 rounded-md px-6 py-2 group">
+				<summary class="text-white cursor-pointer list-none flex items-center justify-between">
+					<span>How is Zarevo different than any LLM?</span>
+					<span class="text-2xl transition-transform group-open:rotate-45">+</span>
+				</summary>
+				<p class="text-sm text-neutral-400 my-2">Unlike generic LLMs, Zarevo is specifically trained on startup validation frameworks and uses a structured research engine to provide comprehensive, actionable insights rather than generic advice.</p>
+			</details>
+			
+			<details class="bg-neutral-950 rounded-md px-6 py-2 group">
+				<summary class="text-white cursor-pointer list-none flex items-center justify-between">
+					<span>Are my ideas secure?</span>
+					<span class="text-2xl transition-transform group-open:rotate-45">+</span>
+				</summary>
+				<p class="text-sm text-neutral-400 my-2">Absolutely. Your ideas are encrypted and stored securely. We never share your data with third parties, and you maintain full ownership of all your submissions and reports.</p>
+			</details>
+		</div>
 	</div>
 </section>
 
