@@ -14,14 +14,14 @@
 
 	let submitting = $state(false);
 	let error = $state<string | null>(null);
-	let creditAmount = $state(72);
+	let creditAmount = $state(16);
 
 	const user = $derived($currentUser as UserRecord | null);
 	const credits = $derived(user?.credits ?? 0);
 
 	function calculatePrice(credits: number): number {
-		const basePrice = 0.20;
-		const discount = Math.min((credits - 24) / 476 * 0.30, 0.30);
+		const basePrice = 2.50;
+		const discount = Math.min((credits - 2) / 98 * 0.30, 0.30);
 		const pricePerCredit = basePrice * (1 - discount);
 		return Math.round(credits * pricePerCredit);
 	}
@@ -304,12 +304,12 @@
 					
 					<input 
 						type="range" 
-						min="24" 
-						max="500" 
+						min="2" 
+						max="100" 
 						step="1" 
 						bind:value={creditAmount}
 						class="w-full h-2 bg-neutral-700 rounded-lg appearance-none cursor-pointer mb-6"
-						style="background: linear-gradient(to right, #F05322 0%, #F05322 {((creditAmount - 24) / (500 - 24)) * 100}%, #404040 {((creditAmount - 24) / (500 - 24)) * 100}%, #404040 100%);"
+						style="background: linear-gradient(to right, #F05322 0%, #F05322 {((creditAmount - 2) / (100 - 2)) * 100}%, #404040 {((creditAmount - 2) / (100 - 2)) * 100}%, #404040 100%);"
 					/>
 				</div>
 				
