@@ -194,20 +194,20 @@
 >
 	<button
 		type="button"
-		class="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-default focus:outline-none"
+		class="absolute inset-0 bg-neutral-950/70 backdrop-blur-sm cursor-default focus:outline-none"
 		aria-label="Close modal"
 		onclick={closeModal}
 	></button>
 
-	<div class="relative z-10 w-full max-w-md rounded-2xl bg-white dark:bg-zinc-900 shadow-xl p-8 border border-zinc-200 dark:border-zinc-700">
+	<div class="relative z-10 w-full max-w-md rounded-2xl bg-white dark:bg-neutral-950/70 shadow-xl p-8 border border-neutral-200 dark:border-neutral-700">
 		<div class="flex justify-between items-center mb-6">
-			<h2 id="auth-modal-title" class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+			<h2 id="auth-modal-title" class="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
 				{otpId ? 'Enter verification code' : currentMode === 'signin' ? 'Sign in' : 'Sign up'}
 			</h2>
 			<button
 				type="button"
 				onclick={closeModal}
-				class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 p-1 rounded transition-colors"
+				class="text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 p-1 rounded transition-colors"
 				aria-label="Close"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -218,18 +218,18 @@
 		</div>
 
 		{#if error}
-			<div class="mb-4 p-3 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm">
+			<div class="mb-4 p-3 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 text-sm">
 				{error}
 			</div>
 		{/if}
 
 		{#if otpId}
 			<div class="space-y-4">
-				<p class="text-sm text-zinc-600 dark:text-zinc-400">
+				<p class="text-sm text-neutral-600 dark:text-neutral-400">
 					We sent a code to <strong>{email}</strong>
 				</p>
 				<div>
-					<label for="otp" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+					<label for="otp" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
 						Verification code
 					</label>
 					<input
@@ -248,7 +248,7 @@
 						type="button"
 						onclick={handleBack}
 						disabled={loading}
-						class="px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
+						class="px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50"
 					>
 						Back
 					</button>
@@ -265,7 +265,7 @@
 		{:else}
 			<form onsubmit={(e) => { e.preventDefault(); handleRequestOTP(); }} class="space-y-4">
 				<div>
-					<label for="email" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+					<label for="email" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
 						Email
 					</label>
 					<input
@@ -280,7 +280,7 @@
 
 				{#if currentMode === 'signup'}
 					<div>
-						<label for="password" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+						<label for="password" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
 							Password
 						</label>
 						<input
@@ -293,7 +293,7 @@
 						/>
 					</div>
 					<div>
-						<label for="passwordConfirm" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+						<label for="passwordConfirm" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
 							Confirm password
 						</label>
 						<input
@@ -312,7 +312,7 @@
 						type="button"
 						disabled={loading}
 						onclick={() => handleOAuth(googleProvider.name)}
-						class="w-full py-3 px-4 rounded-xl border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+						class="w-full py-3 px-4 rounded-xl border border-neutral-300 dark:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-800 font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
 					>
 						<svg class="w-5 h-5" viewBox="0 0 24 24">
 							<path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -324,13 +324,8 @@
 					</button>
 				{/if}
 
-				<div class="relative my-6">
-					<div class="absolute inset-0 flex items-center">
-						<div class="w-full border-t border-zinc-200 dark:border-zinc-600"></div>
-					</div>
-					<div class="relative flex justify-center text-sm">
-						<span class="px-2 bg-white dark:bg-zinc-900 text-zinc-500">or</span>
-					</div>
+				<div class="relative flex justify-center text-sm">
+					<span class="px-2 text-neutral-500">or</span>
 				</div>
 
 				<button
@@ -344,7 +339,7 @@
 		{/if}
 
 		{#if !otpId}
-			<p class="mt-4 text-center text-sm text-zinc-600 dark:text-zinc-400">
+			<p class="mt-4 text-center text-sm text-neutral-600 dark:text-neutral-400">
 				{currentMode === 'signin' ? "Don't have an account?" : 'Already have an account?'}
 				<button
 					type="button"
