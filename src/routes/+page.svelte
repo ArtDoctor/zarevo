@@ -200,6 +200,7 @@
 			credits={credits}
 			isAuthenticated={pb.authStore.isValid}
 			class="text-lg"
+			showLinks={false}
 		/>
 	</form>
 </div>

@@ -126,8 +126,8 @@
 
 <!-- Hero Section -->
 <section class="min-h-[90vh] w-screen bg-linear-to-b from-neutral-900 to-neutral-950 -mx-3 relative left-1/2 right-1/2 -translate-x-1/2 overflow-hidden">
-	<div class="flex flex-col items-center justify-center px-4 relative z-10 min-h-[80vh]">
-		<div class="w-full max-w-2xl">
+	<div class="flex flex-col items-center justify-center relative z-10 min-h-[80vh]">
+		<div class="w-full max-w-[680px] pl-10 pr-4 md:px-4">
 			<h1 class="text-3xl md:text-4xl text-zinc-800 dark:text-zinc-200 mb-8">
 				Imagine a startup. <br /><span class="text-primary">Now validate it.</span>
 			</h1>
@@ -148,7 +148,7 @@
 	
 	<!-- Spline Animation -->
 	<div class="absolute bottom-0 left-0 w-full h-[400px] z-0">
-		<spline-viewer url="https://prod.spline.design/FVYpaJUhLfAnywyj/scene.splinecode" class="w-full h-full"></spline-viewer>
+		<spline-viewer url="https://prod.spline.design/FVYpaJUhLfAnywyj/scene.splinecode" class="w-full h-full" style="width: 100%; height: 400px; display: block;"></spline-viewer>
 	</div>
 </section>
 

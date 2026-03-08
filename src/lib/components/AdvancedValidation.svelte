@@ -107,11 +107,11 @@
 	}
 </script>
 
-<div class="max-w-2xl mx-auto py-12 px-4">
+<div class="max-w-2xl mx-auto py-12 pl-10 pr-4 md:px-4">
 <div class="flex items-center gap-3 mb-8">
 	<Button
-		variant="icon"
-		color="white"
+		variant="normal"
+		color="grey"
 		size="sm"
 		href={backHref}
 		title={backLabel}
@@ -122,6 +122,7 @@
 	</Button>
 	<h1 class="text-2xl">Ideas in. Unicorn ideas out.</h1>
 </div>
+<p class="text-neutral-400 mb-6">More information allows us to better tailor the validation to your needs.</p>
 
 	{#if error}
 		<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
@@ -155,7 +156,7 @@
 				id="geography"
 				type="input"
 				bind:value={geography}
-				placeholder="Geographic region to focus on"
+				placeholder="Do you focus on a specific geographic region?"
 				maxChars={200}
 			/>
 		</div>
@@ -168,7 +169,7 @@
 				id="problem"
 				type="textarea"
 				bind:value={problem}
-				placeholder="What is the problem you are exactly trying to solve? How are you different from competitors?"
+				placeholder="What exactly is the problem you are trying to solve?"
 				rows={3}
 				maxChars={500}
 			/>
@@ -182,7 +183,7 @@
 				id="customer"
 				type="input"
 				bind:value={customer}
-				placeholder="What's your target customer?"
+				placeholder="Who is your target customer?"
 				maxChars={200}
 			/>
 		</div>
@@ -195,7 +196,7 @@
 				id="founder_specific"
 				type="textarea"
 				bind:value={founder_specific}
-				placeholder="What do you have that you think gives you an advantage?"
+				placeholder="What gives you an advantage?"
 				rows={3}
 				maxChars={500}
 			/>
