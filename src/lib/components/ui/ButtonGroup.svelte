@@ -20,7 +20,7 @@
 	}: Props = $props();
 
 	const canBasic = $derived(!isAuthenticated || credits >= 1);
-	const canPro = $derived(!isAuthenticated || credits >= 4);
+	const canPro = $derived(!isAuthenticated || credits >= 5);
 </script>
 
 <div class="flex flex-col sm:flex-row gap-2 {className}">
@@ -28,6 +28,7 @@
 		type="submit"
 		variant="primary"
 		color="grey"
+		cost={1}
 		size="lg"
 		disabled={disabled || !canBasic}
 		title={!canBasic ? 'Requires at least 1 credit' : ''}
@@ -39,10 +40,11 @@
 		type="button"
 		variant="primary"
 		color="orange"
+		cost={5}
 		size="lg"
 		onclick={onPro}
 		disabled={disabled || !canPro}
-		title={!canPro ? 'Requires at least 4 credits' : ''}
+		title={!canPro ? 'Requires at least 5 credits' : ''}
 		class="flex-1"
 	>
 		Advanced validation

@@ -22,6 +22,7 @@
 		type?: ButtonType;
 		class?: string;
 		title?: string;
+		cost?: number;
 		onclick?: (event: MouseEvent) => void;
 		children?: import('svelte').Snippet;
 		[key: string]: any;
@@ -35,6 +36,7 @@
 		href = undefined,
 		type = 'button',
 		class: className = '',
+		cost = undefined,
 		children,
 		...restProps
 	}: Props = $props();
@@ -96,7 +98,7 @@
 
 	// Compute final classes
 	const computedClasses = $derived(
-		`${baseStyles} ${variantStyles[variant][color]} ${sizeStyles[variant][size]} ${className}`
+		`${baseStyles} ${variantStyles[variant][color]} ${sizeStyles[variant][size]} ${cost !== undefined ? '!px-4' : ''} ${className}`
 	);
 </script>
 
@@ -109,6 +111,12 @@
 		{...restProps}
 	>
 		{@render children?.()}
+		{#if cost !== undefined}
+			<span class="ml-auto flex items-center gap-1">
+				{cost}
+				<img src="/credit.svg" alt="credit" class="w-5 h-5" />
+			</span>
+		{/if}
 	</a>
 {:else}
 	<button
@@ -118,5 +126,11 @@
 		{...restProps}
 	>
 		{@render children?.()}
+		{#if cost !== undefined}
+			<span class="ml-auto flex items-center gap-1">
+				{cost}
+				<img src="/credit.svg" alt="credit" class="w-5 h-5" />
+			</span>
+		{/if}
 	</button>
 {/if}

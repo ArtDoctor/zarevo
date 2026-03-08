@@ -120,12 +120,9 @@
 			e.preventDefault();
 			handleSubmitBasic();
 		}}
-		class="space-y-6"
+		class="space-y-2"
 	>
 		<div>
-			<label for="main" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-				Idea description
-			</label>
 			<Field
 				id="main"
 				type="textarea"
@@ -198,7 +195,7 @@
 			disabled={submitting}
 			credits={credits}
 			isAuthenticated={pb.authStore.isValid}
-			class="text-lg py-4"
+			class="text-lg"
 		/>
 	</form>
 </div>
