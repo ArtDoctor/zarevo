@@ -1,10 +1,32 @@
 # Zarevo
 
-Idea validation tool.
+Idea validation tool. Validate startup ideas with basic or advanced AI-powered analysis.
+
+## Tech stack
+
+- SvelteKit 2 + Svelte 5
+- Tailwind CSS 4
+- PocketBase (auth + data)
+- Vite 7
+
+## Prerequisites
+
+- [Bun](https://bun.sh/)
+
+## Setup
+
+1. Install dependencies:
+
+```sh
+bun install
+```
+
+2. Copy `.env.example` to `.env` and set:
+
+- `PB_URL` / `PUBLIC_PB_URL` – PocketBase instance URL
+- `PUBLIC_BACKEND_URL` – Backend API URL
 
 ## Developing
-
-Once you've installed dependencies with `bun install`:
 
 ```sh
 bun run dev
@@ -15,18 +37,19 @@ bun run dev -- --open
 
 ## Building
 
-To create a production version of your app:
-
 ```sh
 bun run build
 ```
 
-You can preview the production build with `bun run preview`.
+Preview the production build:
 
+```sh
+bun run preview
+```
 
 ## Testing
 
-Use
+E2E tests with Playwright:
 
 ```sh
 bun run test
@@ -34,4 +57,4 @@ bun run test
 
 ## Deployment
 
-The page is deployed automatically to https://zarevo.yazero.io when there are changes on the main branch.
+Deployed automatically to https://zarevo.yazero.io when changes are pushed to `main`.
