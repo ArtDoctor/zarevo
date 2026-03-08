@@ -114,7 +114,8 @@
 
 	.field-textarea {
 		resize: vertical;
-		min-height: 6rem;
+		min-height: 8rem;
+		max-height: 20rem;
 	}
 
 	.field-input {

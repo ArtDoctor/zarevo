@@ -91,7 +91,7 @@
 </svelte:head>
 
 <!-- Hero Section -->
-<section class="min-h-[80vh] w-screen bg-linear-to-b from-neutral-900 to-neutral-950 -mx-3 relative left-1/2 right-1/2 -translate-x-1/2 overflow-hidden">
+<section class="min-h-[90vh] w-screen bg-linear-to-b from-neutral-900 to-neutral-950 -mx-3 relative left-1/2 right-1/2 -translate-x-1/2 overflow-hidden">
 	<div class="flex flex-col items-center justify-center px-4 relative z-10 min-h-[80vh]">
 		<div class="w-full max-w-2xl">
 			<h1 class="text-3xl md:text-4xl text-zinc-800 dark:text-zinc-200 mb-8">
@@ -116,6 +116,28 @@
 	<div class="absolute bottom-0 left-0 w-full h-[400px] z-0">
 		<spline-viewer url="https://prod.spline.design/FVYpaJUhLfAnywyj/scene.splinecode" class="w-full h-full"></spline-viewer>
 	</div>
+</section>
+
+<!-- Intro Section -->
+<section class="p-12 mt-24 rounded-md" style="background-image: url('/cubes-bg.png'); background-size: cover; background-position: center;">
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-2 items-center">
+			<!-- Left Container - Text -->
+			<div class="flex flex-col justify-between h-full bg-neutral-950 rounded-md p-6">
+				<h2 class="text-2xl md:text-2xl text-white">
+					A tool for complex startup idea <span class="text-primary font-semibold">validation.</span><br />
+					Ideas in. Unicorn ideas out.
+				</h2>
+				<p class="text-lg text-white">
+					Picking a strong idea that solves a real problem<br />
+					and can actually make money is <span class="text-primary font-semibold">very important.</span>
+				</p>
+			</div>
+
+			<!-- Right Container - Mockup Image with Backdrop Blur -->
+			<div class="flex items-end justify-end rounded-xl pl-6 pt-6 overflow-hidden" style="background-color: rgba(10, 10, 10, 0.7); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);">
+				<img src="/idea-page-mockup.svg" alt="Idea validation mockup" class="w-full h-auto" />
+			</div>
+		</div>
 </section>
 
 <!-- Features Section -->
