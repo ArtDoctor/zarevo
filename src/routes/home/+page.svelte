@@ -76,10 +76,11 @@
 	}
 </script>
 
-<div class="min-h-[60vh] flex flex-col items-center justify-center px-4">
-	<h2 class="text-2xl md:text-3xl text-center text-zinc-800 dark:text-zinc-200 mb-8">
-		Imagine a startup. Now validate it.
-	</h2>
+<div class="min-h-screen flex flex-col items-center justify-center px-4">
+	<div class="w-full max-w-2xl">
+	<h1 class="text-3xl md:text-4xl text-zinc-800 dark:text-zinc-200 mb-8">
+		Imagine a startup. <br /><span class="text-primary">Now validate it.</span>
+	</h1>
 
 	{#if error}
 		<p class="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
@@ -92,4 +93,5 @@
 		isAuthenticated={pb.authStore.isValid}
 		disabled={submitting}
 	/>
+	</div>
 </div>

@@ -6,6 +6,8 @@
 	import { validationFormStore, setValidationForm } from '$lib/stores/validation-form';
 	import { requestSignIn } from '$lib/stores/auth-modal';
 	import { createIdeaAndNavigate, createIdeaAdvancedAndNavigate } from '$lib/api/ideas';
+	import Field from '$lib/components/ui/Field.svelte';
+	import ButtonGroup from '$lib/components/ui/ButtonGroup.svelte';
 
 	interface Props {
 		backHref: string;
@@ -127,27 +129,26 @@
 			<label for="main" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
 				Startup idea
 			</label>
-			<textarea
+			<Field
 				id="main"
+				type="textarea"
 				bind:value={mainInput}
 				placeholder="Describe your startup idea..."
-				class="w-full h-24 px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent resize-none"
-				style="--tw-ring-color: var(--color-primary);"
-				rows="4"
-			></textarea>
+				rows={4}
+				maxChars={800}
+			/>
 		</div>
 
 		<div>
 			<label for="geography" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
 				Geography
 			</label>
-			<input
+			<Field
 				id="geography"
-				type="text"
+				type="input"
 				bind:value={geography}
 				placeholder="Geographic region to focus on"
-				class="w-full px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent"
-				style="--tw-ring-color: var(--color-primary);"
+				maxChars={200}
 			/>
 		</div>
 
@@ -155,27 +156,26 @@
 			<label for="problem" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
 				Problem
 			</label>
-			<textarea
+			<Field
 				id="problem"
+				type="textarea"
 				bind:value={problem}
 				placeholder="What is the problem you are exactly trying to solve? How are you different from competitors?"
-				class="w-full h-20 px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent resize-none"
-				style="--tw-ring-color: var(--color-primary);"
-				rows="3"
-			></textarea>
+				rows={3}
+				maxChars={500}
+			/>
 		</div>
 
 		<div>
 			<label for="customer" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
 				Customer
 			</label>
-			<input
+			<Field
 				id="customer"
-				type="text"
+				type="input"
 				bind:value={customer}
 				placeholder="What's your target customer?"
-				class="w-full px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent"
-				style="--tw-ring-color: var(--color-primary);"
+				maxChars={200}
 			/>
 		</div>
 
@@ -183,34 +183,23 @@
 			<label for="founder_specific" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
 				Founder specific
 			</label>
-			<textarea
+			<Field
 				id="founder_specific"
+				type="textarea"
 				bind:value={founder_specific}
 				placeholder="What do you have that you think gives you an advantage?"
-				class="w-full h-20 px-4 py-3 rounded-xl border border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:border-transparent resize-none"
-				style="--tw-ring-color: var(--color-primary);"
-				rows="3"
-			></textarea>
+				rows={3}
+				maxChars={500}
+			/>
 		</div>
 
-		<div class="flex flex-col sm:flex-row gap-3">
-			<button
-				type="submit"
-				disabled={submitting || credits < 1}
-				title={credits < 1 ? 'Requires at least 1 credit' : ''}
-				class="btn btn-lg btn-primary flex-1 text-lg py-4"
-			>
-				Validate - basic
-			</button>
-			<button
-				type="button"
-				onclick={handleSubmitPro}
-				disabled={submitting || credits < 4}
-				title={credits < 4 ? 'Requires at least 4 credits' : ''}
-				class="btn btn-lg btn-secondary flex-1 text-lg py-4"
-			>
-				Validate - pro
-			</button>
-		</div>
+		<ButtonGroup
+			onBasic={handleSubmitBasic}
+			onPro={handleSubmitPro}
+			disabled={submitting}
+			credits={credits}
+			isAuthenticated={pb.authStore.isValid}
+			class="text-lg"
+		/>
 	</form>
 </div>
