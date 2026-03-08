@@ -23,7 +23,7 @@
 	const canPro = $derived(!isAuthenticated || credits >= 4);
 </script>
 
-<div class="flex flex-col sm:flex-row gap-3 {className}">
+<div class="flex flex-col sm:flex-row gap-2 {className}">
 	<Button
 		type="submit"
 		variant="primary"

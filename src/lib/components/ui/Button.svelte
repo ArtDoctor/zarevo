@@ -9,7 +9,7 @@
 	 */
 
 	type Variant = 'primary' | 'normal' | 'icon' | 'link';
-	type Color = 'orange' | 'white' | 'grey';
+	type Color = 'orange' | 'white' | 'grey' | 'green';
 	type Size = 'sm' | 'md' | 'lg';
 	type ButtonType = 'button' | 'submit' | 'reset';
 
@@ -47,22 +47,26 @@
 		primary: {
 			orange: 'bg-primary font-medium text-white hover:bg-[#FF4E17] active:bg-primary/80',
 			white: 'bg-white text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200',
-			grey: 'bg-neutral-700 text-white hover:bg-neutral-600 active:bg-neutral-500'
+			grey: 'bg-neutral-700 text-white hover:bg-neutral-600 active:bg-neutral-500',
+			green: 'bg-[#0CA12D] font-medium text-white hover:bg-[#07AF2C] active:bg-[#0CA12D]/80'
 		},
 		normal: {
-			orange: 'bg-neutral-800 text-primary hover:bg-neutral-700 active:bg-neutral-600',
+			orange: 'bg-neutral-800 font-medium text-primary hover:bg-neutral-700 active:bg-neutral-600',
 			white: 'bg-neutral-800 text-white hover:bg-neutral-700 active:bg-neutral-600',
-			grey: 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700 active:bg-neutral-600'
+			grey: 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700 active:bg-neutral-600',
+			green: 'bg-[#0CA12D] font-medium text-white hover:bg-[#07AF2C] active:bg-[#0CA12D]/80'
 		},
 		icon: {
 			orange: 'bg-transparent text-primary hover:bg-primary/10 active:bg-primary/20',
 			white: 'bg-transparent text-white hover:bg-white/10 active:bg-white/20',
-			grey: 'bg-transparent text-neutral-400 hover:bg-neutral-800 active:bg-neutral-700'
+			grey: 'bg-transparent text-neutral-400 hover:bg-neutral-800 active:bg-neutral-700',
+			green: 'bg-transparent text-[#0CA12D] hover:bg-[#0CA12D]/10 active:bg-[#0CA12D]/20'
 		},
 		link: {
 			orange: 'bg-primary text-white font-medium hover:bg-[#FF4E17] active:bg-primary/80',
 			white: 'bg-neutral-900 text-neutral-400 hover:text-white active:bg-neutral-800 active:text-white',
-			grey: 'bg-neutral-900 text-neutral-400 hover:text-neutral-200 active:bg-neutral-800 active:text-white'
+			grey: 'bg-neutral-900 text-neutral-400 hover:text-neutral-200 active:bg-neutral-800 active:text-white',
+			green: 'bg-[#0CA12D] text-white font-medium hover:bg-[#07AF2C] active:bg-[#0CA12D]/80'
 		}
 	};
 

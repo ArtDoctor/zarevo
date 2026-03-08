@@ -72,7 +72,7 @@
 								</svg>
 							</Button>
 							{#if profileMenuOpen}
-								<div class="absolute right-0 mt-1 py-1 w-40 bg-neutral-900 border border-neutral-800 rounded-md shadow-lg z-50">
+								<div class="absolute right-0 mt-1 p-1 w-40 bg-neutral-900 border border-neutral-800 rounded-lg shadow-lg z-50">
 									<a
 										href="/profile"
 										class="block px-4 py-2 text-sm hover:bg-neutral-800 rounded-md"
