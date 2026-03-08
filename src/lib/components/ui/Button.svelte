@@ -8,7 +8,7 @@
 	 * <Button href="/about" variant="normal">Link Button</Button>
 	 */
 
-	type Variant = 'primary' | 'normal' | 'icon';
+	type Variant = 'primary' | 'normal' | 'icon' | 'link';
 	type Color = 'orange' | 'white' | 'grey';
 	type Size = 'sm' | 'md' | 'lg';
 	type ButtonType = 'button' | 'submit' | 'reset';
@@ -40,24 +40,29 @@
 	}: Props = $props();
 
 	// Base styles applied to all buttons
-	const baseStyles = 'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed';
+	const baseStyles = 'inline-flex items-center justify-center rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed';
 
 	// Variant styles
 	const variantStyles: Record<Variant, Record<Color, string>> = {
 		primary: {
-			orange: 'bg-primary text-white hover:bg-primary/90 active:bg-primary/80',
+			orange: 'bg-primary font-medium text-white hover:bg-[#FF4E17] active:bg-primary/80',
 			white: 'bg-white text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200',
 			grey: 'bg-neutral-700 text-white hover:bg-neutral-600 active:bg-neutral-500'
 		},
 		normal: {
-			orange: 'bg-neutral-800 border border-primary/30 text-primary hover:bg-neutral-700 hover:border-primary/50 active:bg-neutral-600',
-			white: 'bg-neutral-800 border border-neutral-700 text-white hover:bg-neutral-700 hover:border-neutral-600 active:bg-neutral-600',
-			grey: 'bg-neutral-800 border border-neutral-700 text-neutral-300 hover:bg-neutral-700 hover:border-neutral-600 active:bg-neutral-600'
+			orange: 'bg-neutral-800 text-primary hover:bg-neutral-700 active:bg-neutral-600',
+			white: 'bg-neutral-800 text-white hover:bg-neutral-700 active:bg-neutral-600',
+			grey: 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700 active:bg-neutral-600'
 		},
 		icon: {
 			orange: 'bg-transparent text-primary hover:bg-primary/10 active:bg-primary/20',
 			white: 'bg-transparent text-white hover:bg-white/10 active:bg-white/20',
 			grey: 'bg-transparent text-neutral-400 hover:bg-neutral-800 active:bg-neutral-700'
+		},
+		link: {
+			orange: 'bg-primary text-white font-medium hover:bg-[#FF4E17] active:bg-primary/80',
+			white: 'bg-neutral-900 text-neutral-400 hover:text-white active:bg-neutral-800 active:text-white',
+			grey: 'bg-neutral-900 text-neutral-400 hover:text-neutral-200 active:bg-neutral-800 active:text-white'
 		}
 	};
 
@@ -77,6 +82,11 @@
 			sm: 'text-sm p-1.5',
 			md: 'text-sm p-2',
 			lg: 'text-base p-3'
+		},
+		link: {
+			sm: 'text-sm px-6 py-1 rounded-md min-w-[140px] whitespace-nowrap',
+			md: 'text-sm px-6 py-1 rounded-md min-w-[140px] whitespace-nowrap',
+			lg: 'text-sm px-6 py-1 rounded-md min-w-[140px] whitespace-nowrap'
 		}
 	};
 
