@@ -68,10 +68,10 @@
 		width: 100%;
 		padding: 0.75rem 1rem;
 		border-radius: 12px;
-		background-color: rgba(10, 10, 10, 0.7);
+		background-color: rgba(10, 10, 10, 0.1);
 		backdrop-filter: blur(30px);
 		-webkit-backdrop-filter: blur(30px);
-		border: 1px solid rgba(64, 64, 64, 0.3);
+		border: 1px solid rgba(64, 64, 64, 0.65);
 		color: white;
 		font-size: 1rem;
 		transition: all 0.3s ease;

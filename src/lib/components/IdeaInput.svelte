@@ -30,7 +30,7 @@
 		e.preventDefault();
 		onSubmit(startupIdea);
 	}}
-	class="w-full max-w-2xl space-y-2 pb-48"
+	class="w-full max-w-2xl space-y-2 pb-2 2xl:pb-24"
 >
 	<div>
 		<div class="relative">

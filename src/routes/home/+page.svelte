@@ -157,13 +157,12 @@
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-2 items-center">
 			<!-- Left Container - Text -->
 			<div class="flex flex-col justify-between h-full bg-neutral-950 rounded-md p-6">
-				<h2 class="text-xl lg:text-2xl md:text-2xl text-white mb-12">
-					A tool for complex startup idea <span class="text-primary font-semibold">validation.</span><br />
-					Ideas in. Unicorn ideas out.
+				<h2 class="text-2xl lg:text-3xl md:text-3xl text-white mb-12 max-w-[20ch]">
+					<span class="text-primary font-semibold">Defeat paralysis.</span> Move from ideas to results. Fast.
 				</h2>
 				<p class="lg:text-lg leading-6 text-white">
-					Picking a strong idea that solves a real problem<br />
-					and can actually make money is <span class="text-primary font-semibold">very important.</span>
+					A quick way to know if your startup ideas are worth pursuing.<br />
+					<span class="text-neutral-400">Ideas in. Unicorn ideas out.</span>
 				</p>
 			</div>
 
@@ -219,7 +218,6 @@
 		<div class="flex flex-col justify-between w-full lg:w-2/3 bg-neutral-950 rounded-md p-6">
 			<div>
 				<h2 class="text-2xl text-white mb-6">Advanced validation</h2>
-				
 				<div class="grid grid-cols-2 gap-4 mb-6">
 					<div>
 						<h3 class="text-white mb-1">All in Basic validation</h3>
@@ -285,7 +283,10 @@
 			
 			<div class="mt-6 pt-4 flex justify-between items-center">
 				<p class="text-sm text-white flex items-center gap-1">Cost: 4<img src="/credit.svg" alt="credit" class="w-4 h-4 inline" /></p>
-				<p class="text-xs text-neutral-500">Powered by Zarevo research engine</p>
+				<div class="flex flex-col justify-end items-end gap-1">
+					<p class="text-sm text-white">The standard for idea benchmarking</p>
+					<p class="text-xs text-neutral-500">Powered by Zarevo research engine</p>
+				</div>
 			</div>
 		</div>
 	</div>
